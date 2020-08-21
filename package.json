@@ -1,13 +1,13 @@
 {
   "name": "vue-input-calculator",
+  "homepage": "https://lih1989.github.io/vue-input-calculator/",
   "main": "./dist/vue-input-calculator.common.js",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --port 3000",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --target lib --name vue-input-calculator src/lib.js",
     "lint": "vue-cli-service lint",
-    "build-lib": "vue-cli-service build --target lib --name vue-input-calculator src/lib.js"
+    "build-demo": "vue-cli-service build --mode demo"
   },
   "dependencies": {
     "core-js": "^3.6.5",

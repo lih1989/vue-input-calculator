@@ -4,11 +4,14 @@
 set -e
 
 # сборка
-echo Сборка...
+echo Build Library...
 npm run build
 
+echo Build Demo...
+npm run build-demo
+
 # переход в каталог сборки
-cd dist
+cd demo
 
 # если вы публикуете на пользовательский домен
 # echo 'www.example.com' > CNAME
