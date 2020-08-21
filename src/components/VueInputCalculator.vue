@@ -1,0 +1,437 @@
+<template>
+  <div :style="colorVars" class="vue-input-calculator">
+    <button @click="show=!show">show</button>
+    <transition name="slide">
+      <div class="calc-wrapper" v-if="show">
+        <div class="calculator">
+          <div class="calculator-logs"
+               ref="historyLog"
+               v-if="isHistoryLogs">
+            <span v-for="(log, index) in logs"
+                  :key="index"
+                  @click="logToValue(log)">{{ log }}</span>
+          </div>
+
+          <input :readonly="readonlyInput"
+                 type="string"
+                 inputmode="decimal"
+                 class="calculator-input"
+                 v-model.number="calcValue"
+                 @keyup.enter="getResult()">
+
+          <div class="calculator-row">
+            <div class="calculator-col">
+              <button class="calculator-btn gray action" @click="clear()">C</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn gray action" @click="deleteLastChar">&rsaquo;</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn gray action" @click="changePolar">&plusmn;</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn accent action" @click="addExpresion('/')">/</button>
+            </div>
+          </div>
+          <div class="calculator-row">
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="addExpresion(7)">7</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="addExpresion(8)">8</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="addExpresion(9)">9</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn accent action" @click="addExpresion('*')">*</button>
+            </div>
+          </div>
+          <div class="calculator-row">
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="addExpresion(4)">4</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="addExpresion(5)">5</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="addExpresion(6)">6</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn accent action" @click="addExpresion('-')">-</button>
+            </div>
+          </div>
+          <div class="calculator-row">
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="addExpresion(1)">1</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="addExpresion(2)">2</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="addExpresion(3)">3</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn accent action" @click="addExpresion('+')">+</button>
+            </div>
+          </div>
+          <div class="calculator-row">
+            <div class="calculator-col wide">
+              <button class="calculator-btn" @click="addExpresion(0)">0</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn action" @click="addExpresion('.')">.</button>
+            </div>
+            <div class="calculator-col">
+              <button v-if="isResult" class="calculator-btn success action" @click="applyResult">ок</button>
+              <button v-else class="calculator-btn accent action" @click="getResult">=</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+    <transition name="opacity">
+      <div v-if="show" @click="show=false" class="backdrop"></div>
+    </transition>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'VueInputCalculator',
+  props: {
+    value: {
+      type: Number,
+      default: 0
+    },
+    textColor: {
+      type: String,
+      default: '#ffffff'
+    },
+    bgColor: {
+      type: String,
+      default: '#2f2f31'
+    },
+    eventButtonsBgColor: {
+      type: String,
+      default: '#424345'
+    },
+    numberButtonsBgColor: {
+      type: String,
+      default: '#616163'
+    },
+    actionButtonsBgColor: {
+      type: String,
+      default: '#f49e3f'
+    },
+    actionSuccessButtonBgColor: {
+      type: String,
+      default: '#3ff451'
+    },
+    isHistoryLogs: { // показывать ли лог операций
+      type: Boolean,
+      default: true
+    },
+    // запретить редактировать поле ввода калькулятора
+    // чтобы не появлялась клавиатура ввода на мобильнызх устройствах
+    readonlyInput: {
+      type: Boolean,
+      default: true
+    },
+  },
+  data() {
+    return {
+      show: false,
+      isResult: false, // последнее действие было расчётом результата
+      lastEventValueType: null, // тип данных последнего нажатия - для блокировки нескольких знаков действия подряд
+      calcValue: '0',
+      logs: []
+    }
+  },
+  methods: {
+    addExpresion(e) {
+      console.warn('START: ', e, this.calcValue, this.isResult);
+      if (this.isResult) {
+        if (Number.isNaN(Number.parseFloat(e))) {
+          console.error('ДЕЙСТВИЕ: ', e, this.calcValue, this.isResult);
+          this.calcValue += e;
+        } else {
+          console.error('ЧИСЛО: ', e, this.calcValue, this.isResult);
+          this.calcValue = e;
+        }
+        this.isResult = false;
+      } else {
+        if (this.lastEventValueType === typeof e && typeof e === 'string') {
+          this.deleteLastChar();
+          this.calcValue += e.toString();
+        } else {
+          if (!isNaN(parseFloat(this.calcValue))) {
+            console.log('+')
+            if (this.calcValue === 0 || this.calcValue === '0') {
+              this.calcValue = e.toString()
+            } else {
+              this.calcValue += e.toString();
+            }
+          } else {
+            console.log('++')
+          }
+        }
+      }
+      this.lastEventValueType = typeof e;
+      console.warn('END: ', e, this.calcValue, this.isResult);
+    },
+    getResult() {
+      let log = this.calcValue;
+      this.calcValue = eval(this.calcValue).toString();
+      this.isResult = true;
+      this.logs.push(log + `=${this.calcValue}`);
+
+      // прокрутим лог к последнему действию
+      if (this.$refs.historyLog) {
+        this.$nextTick(() => {
+          this.$refs.historyLog.scrollTop = this.$refs.historyLog.scrollHeight;
+        });
+      }
+    },
+    applyResult() {
+      this.$emit('input', this.calcValue);
+      this.show = false;
+    },
+    logToValue(log) {
+      if (log) {
+        this.calcValue = log.replace(/=.*/, '');
+        this.isResult = false;
+      }
+    },
+    changePolar() {
+      console.log('changePolar ', this.calcValue);
+      if (this.calcValue !== '0') {
+        let regex = /^-/;
+        if (this.calcValue.match(regex)) {
+          this.calcValue = this.calcValue.replace(regex, '');
+        } else {
+          this.calcValue = `-${this.calcValue}`;
+        }
+      }
+    },
+    clear() {
+      this.calcValue = '0';
+      this.isResult = false;
+    },
+    deleteLastChar() {
+      console.log('deleteLastChar ', this.calcValue);
+      if (this.calcValue !== '0') {
+        this.calcValue = this.calcValue.slice(0, -1);
+        if (!this.calcValue) {
+          this.calcValue = '0';
+        }
+      }
+    }
+  },
+  computed: {
+    colorVars() {
+      return {
+        '--vue-input-calculator-text-color': this.textColor,
+        '--vue-input-calculator-bg-color': this.bgColor,
+        '--vue-input-calculator-event-btn-bg-color': this.eventButtonsBgColor,
+        '--vue-input-calculator-number-btn-bg-color': this.numberButtonsBgColor,
+        '--vue-input-calculator-action-btn-bg-color': this.actionButtonsBgColor,
+        '--vue-input-calculator-action-success-btn-bg-color': this.actionSuccessButtonBgColor,
+      };
+    }
+  },
+  watch: {
+    show(newValue) {
+      if (newValue) {
+        document.body.style.overflow = "hidden";
+        this.calcValue = this.value.toString()
+      } else {
+        document.body.style.overflow = "initial";
+      }
+    }
+  },
+}
+</script>
+
+<style lang="scss">
+//  https://github.com/salazarr-js/v-calculator
+
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+.vue-input-calculator {
+  display: contents;
+
+  // обёртка калькулятора
+  .calc-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+
+    // калькулятор
+    .calculator {
+      width: 100%;
+      display: flex;
+      margin: 0 auto;
+      flex-direction: column;
+      max-width: 720px;
+      min-width: 320px;
+      background-color: var(--vue-input-calculator-bg-color);
+
+      .calculator-logs {
+        padding: 0 .8rem 0 .8rem;
+        max-height: 100px;
+        display: flex;
+        position: relative;
+        overflow: auto;
+        align-items: flex-end;
+        flex-direction: column;
+        background: var(--vue-input-calculator-event-btn-bg-color);
+
+        .header {
+          color: var(--vue-input-calculator-text-color);
+          align-self: flex-start;
+          position: sticky;
+          top: 0;
+          left: 0;
+          padding-top: 5px;
+        }
+
+        span {
+          color: var(--vue-input-calculator-text-color);
+          opacity: .75;
+          display: block;
+          font-size: 1rem;
+          text-align: right;
+          padding: .4rem 0;
+          line-height: 1;
+          font-weight: lighter;
+        }
+      }
+
+      .calculator-input {
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        user-select: none;
+
+        color: var(--vue-input-calculator-text-color);
+        width: 100%;
+        border: none;
+        padding: .8rem;
+        display: block;
+        font-size: 2.4rem;
+        background: none;
+        text-align: right;
+        font-weight: lighter;
+
+        &:focus, &:active {
+          outline: none;
+        }
+      }
+
+      .calculator-row {
+        display: flex;
+        padding: 0;
+        justify-content: space-around;
+
+        .calculator-col {
+          flex: 1;
+          box-shadow: 0 0 0 1px var(--vue-input-calculator-bg-color);
+
+          &.wide {
+            flex: 2;
+          }
+        }
+      }
+
+      .calculator-btn {
+        width: 100%;
+        color: var(--vue-input-calculator-text-color);
+        border: none;
+        cursor: pointer;
+        padding: .8rem;
+        outline: none;
+        font-size: 2rem;
+        transition: all .3s ease-in-out;
+        font-weight: 200;
+        justify-content: center;
+        background-color: var(--vue-input-calculator-number-btn-bg-color);
+
+        &.success {
+          background-color: var(--vue-input-calculator-action-success-btn-bg-color);
+          color: var(--vue-input-calculator-text-color);
+        }
+
+        &.accent {
+          background-color: var(--vue-input-calculator-action-btn-bg-color);
+          color: var(--vue-input-calculator-text-color);
+        }
+
+        &.gray {
+          background-color: var(--vue-input-calculator-event-btn-bg-color);
+        }
+
+        &.action {
+        }
+
+        &:active {
+          background-color: var(--vue-input-calculator-bg-color);
+        }
+      }
+
+    }
+  }
+
+  // подложка под калькулятором
+  .backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+}
+
+// анимация движения калькулятора
+.slide-enter-active {
+  animation: slide-in 0.5s;
+}
+
+.slide-leave-active {
+  animation: slide-in 0.3s reverse;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+// анимация прозрачности фона - бекдропа
+.opacity-enter-active {
+  animation: opacity-in 0.5s;
+}
+
+.opacity-leave-active {
+  animation: opacity-in 0.3s reverse;
+}
+
+@keyframes opacity-in {
+  100% {
+    opacity: 1;
+  }
+  0% {
+    opacity: 0;
+  }
+}
+</style>
