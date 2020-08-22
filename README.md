@@ -1,7 +1,6 @@
 # vue-input-calculator
 
-## Aplha version!
-### Not Stability!
+## Develop version!
 
 ### Demo link
 [https://lih1989.github.io/vue-input-calculator/](https://lih1989.github.io/vue-input-calculator/).
