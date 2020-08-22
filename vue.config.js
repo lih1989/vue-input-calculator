@@ -5,5 +5,7 @@ module.exports = {
     outputDir: process.env.NODE_ENV === 'production'
         ? __dirname+'/lib'
         : __dirname+'/demo',
-    css: {extract: false}
+    css: {
+        extract: process.env.NODE_ENV !== 'production'
+    }
 };

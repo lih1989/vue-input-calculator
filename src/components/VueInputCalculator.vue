@@ -1,6 +1,8 @@
 <template>
   <div :style="colorVars" class="vue-input-calculator">
-    <button @click="show=!show">show</button>
+    <div :class="triggerClass" @click="show=!show">
+      <slot>Click Slot</slot>
+    </div>
     <transition name="slide">
       <div class="calc-wrapper" v-if="show">
         <div class="calculator">
@@ -21,7 +23,7 @@
 
           <div class="calculator-row">
             <div class="calculator-col">
-              <button class="calculator-btn gray action" @click="clear()">C</button>
+              <button class="calculator-btn gray action" @click="clear()">c</button>
             </div>
             <div class="calculator-col">
               <button class="calculator-btn gray action" @click="deleteLastChar">&rsaquo;</button>
@@ -91,7 +93,7 @@
       </div>
     </transition>
     <transition name="opacity">
-      <div v-if="show" @click="show=false" class="backdrop"></div>
+      <div v-if="show" @click="persistent ? '':show=false" class="backdrop"></div>
     </transition>
   </div>
 </template>
@@ -101,12 +103,16 @@ export default {
   name: 'VueInputCalculator',
   props: {
     value: {
-      type: Number,
+      type: [Number, String],
       default: 0
     },
     textColor: {
       type: String,
       default: '#ffffff'
+    },
+    triggerClass: {
+      type: String,
+      default: ''
     },
     bgColor: {
       type: String,
@@ -132,6 +138,14 @@ export default {
       type: Boolean,
       default: true
     },
+    autoApply: { // принимать значение и закрывать калькулятор при нажатии на =
+      type: Boolean,
+      default: false
+    },
+    persistent: { // закрытие при клике на подложку
+      type: Boolean,
+      default: false
+    },
     // запретить редактировать поле ввода калькулятора
     // чтобы не появлялась клавиатура ввода на мобильнызх устройствах
     readonlyInput: {
@@ -150,13 +164,13 @@ export default {
   },
   methods: {
     addExpresion(e) {
-      console.warn('START: ', e, this.calcValue, this.isResult);
+      // console.warn('START: ', e, this.calcValue, this.isResult);
       if (this.isResult) {
         if (Number.isNaN(Number.parseFloat(e))) {
-          console.error('ДЕЙСТВИЕ: ', e, this.calcValue, this.isResult);
+          // console.error('ДЕЙСТВИЕ: ', e, this.calcValue, this.isResult);
           this.calcValue += e;
         } else {
-          console.error('ЧИСЛО: ', e, this.calcValue, this.isResult);
+          // console.error('ЧИСЛО: ', e, this.calcValue, this.isResult);
           this.calcValue = e;
         }
         this.isResult = false;
@@ -166,19 +180,18 @@ export default {
           this.calcValue += e.toString();
         } else {
           if (!isNaN(parseFloat(this.calcValue))) {
-            console.log('+')
             if (this.calcValue === 0 || this.calcValue === '0') {
               this.calcValue = e.toString()
             } else {
               this.calcValue += e.toString();
             }
           } else {
-            console.log('++')
+            console.error('???')
           }
         }
       }
       this.lastEventValueType = typeof e;
-      console.warn('END: ', e, this.calcValue, this.isResult);
+      // console.warn('END: ', e, this.calcValue, this.isResult);
     },
     getResult() {
       let log = this.calcValue;
@@ -191,6 +204,10 @@ export default {
         this.$nextTick(() => {
           this.$refs.historyLog.scrollTop = this.$refs.historyLog.scrollHeight;
         });
+      }
+
+      if(this.autoApply){
+        this.applyResult();
       }
     },
     applyResult() {
@@ -262,15 +279,22 @@ export default {
 
 .vue-input-calculator {
   display: contents;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
 
   // обёртка калькулятора
   .calc-wrapper {
-    width: 100%;
+    /*width: 100%;*/
     margin: 0 auto;
     padding: 0;
     position: fixed;
     bottom: 0;
-    left: 0;
+    /*left: 0;*/
     z-index: 1;
 
     // калькулятор
@@ -282,6 +306,7 @@ export default {
       max-width: 720px;
       min-width: 320px;
       background-color: var(--vue-input-calculator-bg-color);
+      box-shadow: 0 0 0 1px var(--vue-input-calculator-bg-color);
 
       .calculator-logs {
         padding: 0 .8rem 0 .8rem;
@@ -315,10 +340,6 @@ export default {
       }
 
       .calculator-input {
-        -moz-user-select: none;
-        -khtml-user-select: none;
-        user-select: none;
-
         color: var(--vue-input-calculator-text-color);
         width: 100%;
         border: none;
@@ -354,7 +375,7 @@ export default {
         color: var(--vue-input-calculator-text-color);
         border: none;
         cursor: pointer;
-        padding: .8rem;
+        padding: .3rem;
         outline: none;
         font-size: 2rem;
         transition: all .3s ease-in-out;
