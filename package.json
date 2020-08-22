@@ -2,7 +2,7 @@
   "name": "vue-input-calculator",
   "homepage": "https://lih1989.github.io/vue-input-calculator/",
   "main": "./lib/vue-input-calculator.common.js",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "scripts": {
     "lint": "vue-cli-service lint",
     "serve": "vue-cli-service serve --port 3000",
@@ -11,11 +11,9 @@
     "predeploy": "npm run build-demo",
     "deploy": "gh-pages -d demo"
   },
-  "dependencies": {
-    "core-js": "^3.6.5",
-    "vue": "^2.6.11"
-  },
   "devDependencies": {
+    "core-js": "^3.6.5",
+    "vue": "^2.6.11",
     "gh-pages": "^3.1.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
@@ -45,5 +43,15 @@
     "> 1%",
     "last 2 versions",
     "not dead"
+  ],
+  "keywords": [
+    "vue",
+    "input calculator",
+    "javascript",
+    "vuejs",
+    "vue.js",
+    "input",
+    "calculator",
+    "vue component"
   ]
 }
