@@ -320,9 +320,9 @@
 
         // обёртка калькулятора
         .calc-wrapper {
-            margin: -1px auto 0 auto;
             padding: 0;
             position: fixed;
+            bottom: 0;
             z-index: 1;
 
             // калькулятор
