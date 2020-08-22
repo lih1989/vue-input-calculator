@@ -200,6 +200,12 @@
                 // console.warn('END: ', e, this.calcValue, this.isResult);
             },
             getResult() {
+                // проверю наличие мат действия в конце
+                // при наличии удаляю знаки провожу вычисления
+                if(this.calcValue.match(/.*[/*-+]$/)){
+                    this.calcValue = this.calcValue.slice(0, -1);
+                }
+
                 let log = this.calcValue;
                 this.calcValue = eval(this.calcValue).toString();
                 this.isResult = true;
