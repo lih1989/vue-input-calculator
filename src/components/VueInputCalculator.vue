@@ -107,7 +107,7 @@
         props: {
             value: {
                 type: [Number, String],
-                default: 0
+                required: true
             },
             textColor: {
                 type: String,
