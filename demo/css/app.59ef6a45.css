@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 .vue-input-calculator {
-  display: contents;
+  z-index: 0;
   -webkit-touch-callout: none;
   /* iOS Safari */
   -webkit-user-select: none;
@@ -13,16 +13,12 @@
   -ms-user-select: none;
   /* Internet Explorer/Edge */
   user-select: none;
-  /* Non-prefixed version, currently
-     not supported by any browser */
+  /* Non-prefixed version, currently not supported by any browser */
 }
 .vue-input-calculator .calc-wrapper {
-  /*width: 100%;*/
-  margin: 0 auto;
+  margin: -1px auto 0 auto;
   padding: 0;
   position: fixed;
-  bottom: 0;
-  /*left: 0;*/
   z-index: 1;
 }
 .vue-input-calculator .calc-wrapper .calculator {
@@ -121,9 +117,6 @@
   background-color: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
   z-index: 0;
 }
 .slide-enter-active {
@@ -211,16 +204,12 @@ html, body, #app {
   padding: 1rem 0;
 }
 #app .preview-block {
-  flex: auto;
-  margin: 1rem auto;
   padding: 1rem;
-  display: flex;
-  flex-direction: column;
   background-color: #e6e6e6;
   min-width: 300px;
   max-width: 400px;
 }
-#app .preview-block > span {
+#app .preview-block > .input-label {
   font-weight: bold;
   color: #2c3e50;
   margin: 7px 0 5px 0;
@@ -240,5 +229,4 @@ html, body, #app {
   font-size: 34px;
   color: #2c3e50;
   border: none;
-  /*background-color: transparent;*/
 }
