@@ -202,7 +202,7 @@
             getResult() {
                 // проверю наличие мат действия в конце
                 // при наличии удаляю знаки провожу вычисления
-                if(this.calcValue.match(/.*[/*-+]$/)){
+                if(this.calcValue.match(/.*[/*\-+]$/)){
                     this.calcValue = this.calcValue.slice(0, -1);
                 }
 
