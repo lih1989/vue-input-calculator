@@ -20,24 +20,25 @@
             <div>Vue Input Calculator</div>
         </div>
         <div class="preview-block">
-            <span>Default:</span>
+            <div class="input-label">Default:</div>
             <div class="sample">
                 <input type="number" v-model.number="inputSimple"/>
                 <VueInputCalculator v-model="inputSimple">
                     Calc
                 </VueInputCalculator>
             </div>
-            <span>Color Styling:</span>
+            <div class="input-label">Color Styling:</div>
             <div class="sample">
                 <input type="number" v-model.number="inputSimple"/>
+
                 <VueInputCalculator v-model="inputSimple"
                                     :is-history-logs="true"
-                                    textColor="#bfbc00"
-                                    bgColor="white"
-                                    eventButtonsBgColor="#1d1d8e"
-                                    numberButtonsBgColor="#597f9e"
-                                    actionButtonsBgColor="#1d1d8e"
-                                    actionSuccessButtonBgColor="red">
+                                    textColor="#ffffff"
+                                    bgColor="#151515"
+                                    eventButtonsBgColor="#333333"
+                                    numberButtonsBgColor="#212121"
+                                    actionButtonsBgColor="#333333"
+                                    actionSuccessButtonBgColor="#156900">
                     <div class="calculator-icon">
                         <svg width="40" height="40" version="1.1" xmlns="http://www.w3.org/2000/svg"
                              xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000"
@@ -52,25 +53,19 @@
                     </div>
                 </VueInputCalculator>
             </div>
-            <span>Props:</span>
+            <div class="input-label">
+                Props:
+                <small>
+                    is-history-logs, auto-apply, persistent
+                </small>
+            </div>
             <div class="sample">
                 <input type="number" v-model.number="inputSimple"/>
                 <VueInputCalculator v-model="inputSimple"
                                     :is-history-logs="false"
                                     :auto-apply="true"
                                     :persistent="true">
-                    <div class="calculator-icon">
-                        <svg width="40" height="40" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000"
-                             enable-background="new 0 0 1000 1000" xml:space="preserve">
-                              <g>
-                                <g transform="translate(0.000000,511.000000) scale(0.100000,-0.100000)">
-                                  <path fill="#2c3e50"
-                                        d="M1694.1,4969.9c-238.5-76.6-417.9-242.8-514.1-479.1l-52.5-124.7V117.3c0-4218.1,0-4250.9,43.8-4369.1c91.9-242.8,273.5-415.7,522.9-494.4c135.6-43.8,196.9-43.8,3305.8-43.8c3097.9,0,3170.2,0,3305.8,43.8c168.5,52.5,330.4,170.7,428.8,312.9c148.8,218.8,137.8-109.4,137.8,4544.1c0,4653.5,10.9,4325.3-137.8,4544.1c-98.5,142.2-260.4,260.4-428.8,312.9c-135.6,43.8-205.6,43.8-3314.5,41.6C2002.6,5009.3,1810.1,5007.1,1694.1,4969.9z M7887.8,2998.7v-743.9H4999.9H2112v743.9v743.9h2887.9h2887.9V2998.7z M3706.9,1174c94.1-50.3,111.6-118.1,111.6-450.7V417h306.3c332.6,0,400.4-17.5,450.7-111.6c63.4-124.7,21.9-336.9-76.6-391.6c-24.1-10.9-186-21.9-361-21.9h-319.4v-306.3c0-413.5-35-481.3-249.4-481.3c-240.7,0-275.7,61.3-275.7,481.3v306.3H2974c-175,0-336.9,10.9-361,21.9c-98.5,54.7-140,266.9-76.6,391.6c50.3,94.1,118.1,111.6,450.7,111.6h306.3v312.9c2.2,332.6,15.3,391.6,111.6,444.1C3475,1213.4,3630.3,1211.2,3706.9,1174z M7419.6,342.6c63.4-63.4,74.4-89.7,74.4-177.2c0-113.8-26.3-179.4-96.3-234.1c-41.6-35-126.9-39.4-960.4-39.4h-916.7l-63.4,63.4c-54.7,54.7-63.5,81-63.5,181.6c2.2,63.4,15.3,140,30.6,168.4c61.3,109.4,72.2,109.4,1026.1,111.6h894.8L7419.6,342.6z M6597-1457.9c35-19.7,72.2-59.1,85.3-87.5c56.9-122.5,10.9-328.2-83.2-378.5c-24.1-10.9-98.5-21.9-166.3-21.9c-107.2,0-131.3,8.8-188.1,63.5c-54.7,54.7-63.5,81-63.5,181.6c2.2,131.3,35,207.8,111.6,249.4C6367.3-1409.8,6524.8-1414.2,6597-1457.9z M3313.1-1869.3l234.1-229.7l245,229.7c218.8,203.5,253.8,229.7,323.8,229.7c65.6,0,98.5-17.5,175-96.3c140-140,135.6-207.8-32.8-400.4c-70-83.1-175-192.5-229.7-247.2l-100.6-96.3l229.7-234.1c212.2-214.4,229.7-238.5,229.7-317.2c0-70-15.3-100.7-91.9-177.2c-80.9-83.1-105-94.1-188.1-94.1c-91.9,0-105,8.8-326,225.3l-229.7,225.4l-223.1-225.4c-218.8-221-225.4-225.3-323.8-225.3c-89.7,0-107.2,8.8-190.3,98.4c-70,76.6-89.7,113.8-89.7,177.2c0,72.2,21.9,102.8,229.7,312.9l227.5,231.9l-227.5,231.9c-218.8,221-229.7,236.3-229.7,326c0,80.9,13.1,105,96.3,188.2c78.8,78.8,109.4,96.3,177.2,96.3C3074.6-1639.5,3100.9-1659.2,3313.1-1869.3z M7419.6-2282.7c63.4-63.4,74.4-89.7,74.4-177.2c0-113.8-26.3-179.4-96.3-234.1c-41.6-35-126.9-39.4-960.4-39.4h-916.7l-63.4,63.5c-54.7,54.7-63.5,81-63.5,181.6c2.2,63.5,15.3,140,30.6,168.5c61.3,109.4,72.2,109.4,1026.1,111.6h894.8L7419.6-2282.7z M6594.8-3026.6c72.2-39.4,111.6-118.1,111.6-234.1c0-186-107.2-275.7-308.5-256c-144.4,15.3-196.9,67.8-212.2,212.2c-13.1,133.4,24.1,234.1,102.8,275.7C6362.9-2989.4,6518.3-2987.2,6594.8-3026.6z"/>
-                                </g>
-                              </g>
-                        </svg>
-                    </div>
+                    <button style="height: 34px;background-color: #2c3e50;color: white; font-weight: 600">+/-</button>
                 </VueInputCalculator>
             </div>
         </div>
@@ -137,17 +132,13 @@
         }
 
         .preview-block {
-            flex: auto;
-            margin: 1rem auto;
             padding: 1rem;
-            display: flex;
-            flex-direction: column;
             background-color: #e6e6e6;
             min-width: 300px;
             max-width: 400px;
 
 
-            & > span {
+            & > .input-label {
                 font-weight: bold;
                 color: #2c3e50;
                 margin: 7px 0 5px 0;
@@ -168,7 +159,6 @@
                     font-size: 34px;
                     color: #2c3e50;
                     border: none;
-                    /*background-color: transparent;*/
                 }
             }
         }
