@@ -53,5 +53,9 @@
     "input",
     "calculator",
     "vue component"
-  ]
+  ],
+  "license": {
+    "type": "MIT",
+    "url": "http://www.opensource.org/licenses/mit-license.php"
+  }
 }
