@@ -183,14 +183,16 @@
                         this.deleteLastChar();
                         this.calcValue += e.toString();
                     } else {
-                        if (!isNaN(parseFloat(this.calcValue))) {
-                            if (this.calcValue === 0 || this.calcValue === '0') {
+                        if (this.calcValue === 0 || this.calcValue === '0') {
+                            // console.error('НУЛЬ: ', e, this.calcValue, this.isResult);
+                            if(typeof e === "number"){
                                 this.calcValue = e.toString()
                             } else {
-                                this.calcValue += e.toString();
+                                // если в значении находится ноль и  пришел знак действия
+                                // ничего неделаю
                             }
                         } else {
-                            console.error('???')
+                            this.calcValue += e.toString();
                         }
                     }
                 }
