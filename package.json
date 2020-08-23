@@ -5,9 +5,9 @@
   "version": "0.3.1",
   "scripts": {
     "serve": "vue-cli-service serve --port 3000",
+    "build": "vue-cli-service build --target lib --name vue-input-calculator src/lib.js",
     "predeploy": "vue-cli-service build --mode demo",
     "deploy": "gh-pages -d demo",
-    "build": "vue-cli-service build --target lib --name vue-input-calculator src/lib.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
