@@ -302,8 +302,7 @@
     }
 </script>
 
-<style lang="scss">
-    //  https://github.com/salazarr-js/v-calculator
+<style lang="scss" scoped>
 
     *, ::after, ::before {
         box-sizing: border-box;
