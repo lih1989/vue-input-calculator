@@ -2,7 +2,7 @@
   "name": "vue-input-calculator",
   "homepage": "https://lih1989.github.io/vue-input-calculator/",
   "main": "./lib/vue-input-calculator.common.js",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "scripts": {
     "serve": "vue-cli-service serve --port 3000",
     "predeploy": "vue-cli-service build --mode demo",
