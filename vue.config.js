@@ -1,11 +1,11 @@
 module.exports = {
-    publicPath: process.env.NODE_ENV === 'production'
-        ? '/'
-        : '/vue-input-calculator/',
+    publicPath: process.env.NODE_ENV === 'demo'
+        ? '/vue-input-calculator/'
+        : '/',
     outputDir: process.env.NODE_ENV === 'production'
         ? __dirname+'/lib'
         : __dirname+'/demo',
     css: {
-        extract: process.env.NODE_ENV !== 'production'
+        extract: false
     }
 };
