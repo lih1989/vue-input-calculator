@@ -7,7 +7,7 @@
 
 > Calculator input component. Mobile friendly.
 ## Demo
-[View demo](https://lih1989.github.io/vue-input-calculator/).
+[View demo](https://lih1989.github.io/vue-input-calculator/)
 
 ## Install
 
@@ -30,19 +30,27 @@ import VueInputCalculator from "vue-input-calculator";
 Vue.component('vue-input-calculator', VueInputCalculator);
 ```
 
-#### Local
-```js
-// component.vue
-import VueInputCalculator from "vue-input-calculator";
-export default {
-    components: {VueInputCalculator}
-    ...
-  }
-```
-## Usage
+## Local Usage
 
 ```html
-<VueInputCalculator v-model="targetVariable">Calc</VueInputCalculator>
+<template>
+  <div>
+      <input type="number" v-model.number="targetValue"/>
+      <VueInputCalculator v-model="targetValue">
+        CALC
+      </VueInputCalculator>
+  </div>
+</template>
+<script>
+  import VueInputCalculator from "vue-input-calculator";
+  export default {
+    name: 'component.vue',
+    components: {VueInputCalculator},
+    data() {
+      return { targetValue: 0 }
+    }
+  }
+</script>
 ```
 
 ## Setup
