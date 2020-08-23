@@ -4,12 +4,11 @@
   "main": "./lib/vue-input-calculator.common.js",
   "version": "0.2.8",
   "scripts": {
-    "build": "vue-cli-service build --target lib --name vue-input-calculator src/lib.js",
-    "predeploy": "npm run build-demo",
-    "deploy": "gh-pages -d demo",
     "serve": "vue-cli-service serve --port 3000",
-    "lint": "vue-cli-service lint",
-    "build-demo": "vue-cli-service build --mode demo"
+    "predeploy": "vue-cli-service build --mode demo",
+    "deploy": "gh-pages -d demo",
+    "build": "vue-cli-service build --target lib --name vue-input-calculator src/lib.js",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^3.6.5",
