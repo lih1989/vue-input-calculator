@@ -1,8 +1,9 @@
 {
   "name": "vue-input-calculator",
+  "version": "0.3.5",
+  "description": "Calculator input component. Mobile friendly.",
   "homepage": "https://lih1989.github.io/vue-input-calculator/",
   "main": "./lib/vue-input-calculator.common.js",
-  "version": "0.3.4",
   "scripts": {
     "serve": "vue-cli-service serve --port 3000",
     "build": "vue-cli-service build --target lib --name vue-input-calculator src/lib.js",
@@ -10,6 +11,10 @@
     "deploy": "gh-pages -d demo",
     "lint": "vue-cli-service lint"
   },
+  "files": [
+    "lib",
+    "src"
+  ],
   "devDependencies": {
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
@@ -53,5 +58,10 @@
     "calculator",
     "vue component"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lih1989/vue-input-calculator.git"
+  },
+  "author": "Ivan Lihomanov <lih1989@yandex.ru>",
   "license": "MIT"
 }
