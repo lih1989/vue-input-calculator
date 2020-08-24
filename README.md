@@ -30,7 +30,7 @@ import VueInputCalculator from "vue-input-calculator";
 Vue.component('vue-input-calculator', VueInputCalculator);
 ```
 
-## Local Usage
+#### Local Usage
 
 ```html
 <template>
@@ -63,7 +63,8 @@ auto-apply | `Boolean` | `false` | auto continue/close on calc result
 persistent | `Boolean` | `false` | disable backdrop click to cancel (outside click)
 readonly-input | `Boolean` | `true` | calculator input read only
 is-history-logs | `Boolean` | `true` | show math operations log
-trigger-class | `String` | - | trigger for open styling class
+z-index | `String, Number` | 1 | layer calculator z-index position 
+trigger-wrapper-class | `String` | - | trigger for open calculator class styles
 text-color | `String` | `#ffffff` | calculator text color
 bg-color | `String` | `#2f2f31` | calculator background color
 event-buttons-bg-color | `String` | `#424345` | calculator buttons color(c, &rsaquo;, &plusmn;)
