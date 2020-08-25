@@ -130,7 +130,6 @@ export default {
       this.prepareInput(value);
     },
     prepareInput(value) {
-      this.isResult = false;
       let inputIsAction = Number.isNaN(Number.parseInt(value));
       let lastSimbolIsAction = Number.isNaN(Number.parseInt(this.expresion.slice(-1)));
 
@@ -143,16 +142,13 @@ export default {
         // провожу замену символа действия
         return this.expresion = this.expresion.slice(0, -1) + value;
       } else if (inputIsAction && (value === 'Enter' || value === '=')) {
-        console.error(2);
+        console.error(2, this.isResult);
         // проверю наличие незавершенного выражения - мат действия в конце
         // при наличии удаляю знак c конца и провожу вычисления
         if (lastSimbolIsAction) {
           this.expresion = this.expresion.slice(0, -1);
         }
-        // TODO разобрать выражение на части спарсить числа и собрать снова - чтобы не было ошибок с 5+09 = ERROR
-        // this.expresion = this.expresion.split(/[/*\-+]/).map(token => Number.parseFloat(token)).join('')
-
-        return this.calculate(); // расчитываю результат по выражению
+        return this.isResult ? this.applyResult() : this.calculate(); // расчитываю результат по выражению
       } else if(inputIsAction && value === '.') {
         console.error(3);
         // есть ли в последней части выражения знак разделения .
@@ -186,14 +182,34 @@ export default {
       console.error(5);
       this.expresion += value;
       console.error('prepareInput', value);
+
+      this.isResult = false;
     },
     calculate() {
       let log = this.expresion;
 
+      // Разобрать выражение на части спарсить числа и собрать снова
+      // используя parseFloat - чтобы не было ошибок с 5+09 = ERROR
+      let regex = /[/*\-+]/g;
+      let resultActions = this.expresion.match(regex);
+      if(!resultActions){
+        return this.isResult = true;
+      }
+      let resultNumbers = this.expresion.split(regex);
+      this.expresion = resultNumbers.reduce((str, currNum, index)=>{
+        str = str + parseFloat(currNum) + (resultActions[index] || '');
+        return str
+      },"");
+
+      console.error({
+        resultActions,
+        resultNumbers,
+        valideExpresion:this.expresion
+      });
       // пробуем выполнить операцию
       try {
         let result = eval(this.expresion);
-        console.warn('result',result, typeof result)
+        console.warn('result',result, typeof result);
         this.expresion = Number.isInteger(result) ? result.toString():parseFloat(result.toFixed(this.floatResultFixedCount)).toString();
         this.isResult = true;
         this.logs.push(log + `=${this.expresion}`);
