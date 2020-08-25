@@ -13,10 +13,8 @@
 
           <input readonly
                  type="text"
-                 inputmode="decimal"
                  class="calculator-input"
-                 v-model.number="calcValue"
-                 @keyup.enter="getResult()">
+                 v-model.number="calcValue">
 
           <div class="calculator-row">
             <div class="calculator-col">
@@ -221,6 +219,16 @@ export default {
           this.calcValue = '0';
         }
       }
+    },
+    keyboardHandler(event){
+      let allowValue = (event.key).match(/[0-9%/*\-+=]|Backspace|Enter/);
+      if(Array.isArray(allowValue) &&  allowValue.input){
+        let inputIsAction = Number.isNaN(Number.parseInt(allowValue.input));
+        console.error('keyboardHandler', allowValue.input,{inputIsAction});
+      }
+    },
+    touchHandler(event){
+      console.error('touchHandler', event);
     }
   },
   computed: {
@@ -253,11 +261,20 @@ export default {
         document.body.style.overflow = "hidden";
         this.calcValue = this.value.toString();
         this.showStyles = true;
+        // this.$nextTick(()=>{
+        //   let buttons = this.$el.getElementsByClassName('calculator-btn');
+        //   for (let btn of buttons){
+        //     console.error("show true", btn);
+        //     btn
+        //   }
+        // })
+        document.addEventListener('keydown', this.keyboardHandler);
       } else {
         document.body.style.overflow = "initial";
+        document.removeEventListener('keydown', this.keyboardHandler);
       }
     }
-  },
+  }
 }
 </script>
 
