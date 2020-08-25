@@ -20,11 +20,8 @@
             <div class="calculator-col">
               <button class="calculator-btn gray action" @click="clear()">c</button>
             </div>
-            <div class="calculator-col">
+            <div class="calculator-col wide">
               <button class="calculator-btn gray action" @click="deleteLastChar">&rsaquo;</button>
-            </div>
-            <div class="calculator-col">
-              <button class="calculator-btn gray action" @click="changePolar">&plusmn;</button>
             </div>
             <div class="calculator-col">
               <button class="calculator-btn accent action" @click="touchHandler('/')">/</button>
@@ -82,7 +79,7 @@
             <div class="calculator-col">
               <button v-if="isResult" class="calculator-btn success action" @click="applyResult">ок
               </button>
-              <button v-else class="calculator-btn accent action" @click="calculate">=</button>
+              <button v-else class="calculator-btn accent action" @click="touchHandler('=')">=</button>
             </div>
           </div>
         </div>
@@ -176,47 +173,52 @@ export default {
     },
 
 
-    keyboardHandler(event){
+    keyboardHandler(event) {
       let allowValue = (event.key).match(/[0-9%/*\-+=.,]|Backspace|Enter/);
-      if(Array.isArray(allowValue) && allowValue.input){
+      if (Array.isArray(allowValue) && allowValue.input) {
         this.prepareInput(allowValue.input);
       }
     },
-    touchHandler(value){
+    touchHandler(value) {
       this.prepareInput(value);
     },
-    prepareInput(value){
+    prepareInput(value) {
+      let inputIsAction = Number.isNaN(Number.parseInt(value));
+      // если клиент хочет сделать расчёт выражения
+      if (value.match(/=|Enter/)) {
+        // проверю наличие мат действия в конце
+        // при наличии удаляю знак c конца и провожу вычисления
+        if (this.expresion.match(/.*[/*\-+]$/)) {
+          this.expresion = this.expresion.slice(0, -1);
+        }
+        return this.calculate();
+      }
       // заменим запятую на точку для универсальности при разных раскладках
       if (value === ',') value = '.';
-      // если строка выражения не изменялась
-      if (value === '0'){
-        if(this.expresion === '0' || this.expresion === '-0'){
-          value = ''
+
+      // если выражение не изменялось и пытаются ввести 0 - игнорим
+      if (this.expresion === '0') {
+        if (value === '0') {
+          // значение обнулено - значит ничего не нужно делать
+          return '';
+        } else if (!inputIsAction) {
+          return this.expresion = value;
         }
       }
-      // if (value === '.')
-
-      if(value){
-        let inputIsAction = Number.isNaN(Number.parseInt(value));
-
-        this.expresion += value;
-        console.error('prepareInput', value, {inputIsAction});
-      }else{
-        // значение обнулено - значит ничего не нужно делать
-        console.error('prepareInput', value);
-      }
+      this.expresion += value;
+      console.error('prepareInput', value, {inputIsAction});
     },
     calculate() {
-      // проверю наличие мат действия в конце
-      // при наличии удаляю знаки провожу вычисления
-      if (this.expresion.match(/.*[/*\-+]$/)) {
-        this.expresion = this.expresion.slice(0, -1);
-      }
-
       let log = this.expresion;
-      this.expresion = eval(this.expresion).toString();
-      this.isResult = true;
-      this.logs.push(log + `=${this.expresion}`);
+
+      // пробуем выполнить операцию
+      try {
+        this.expresion = eval(this.expresion).toString();
+        this.isResult = true;
+        this.logs.push(log + `=${this.expresion}`);
+      } catch {
+        console.log('Error eval: ',this.expresion);
+      }
 
       // прокрутим лог к последнему действию
       if (this.$refs.historyLog) {
@@ -227,15 +229,6 @@ export default {
 
       if (this.autoApply) {
         this.applyResult();
-      }
-    },
-    changePolar() {
-      console.log('changePolar ', this.expresion);
-      let regex = /^-/;
-      if (this.expresion.match(regex)) {
-        this.expresion = this.expresion.replace(regex, '');
-      } else {
-        this.expresion = `-${this.expresion}`;
       }
     },
     clear() {
