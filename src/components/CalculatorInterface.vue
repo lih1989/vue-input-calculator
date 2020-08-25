@@ -107,6 +107,7 @@ export default {
     "isHistoryLogs",
     "autoApply",
     "persistent",
+    "floatResultFixedCount",
     "show"
   ],
   data() {
@@ -120,59 +121,6 @@ export default {
     }
   },
   methods: {
-    addExpresion(e) {
-      // console.warn('START: ', e, this.calcValue, this.isResult);
-      if (this.isResult) {
-        if (Number.isNaN(Number.parseFloat(e))) {
-          // console.error('ДЕЙСТВИЕ: ', e, this.calcValue, this.isResult);
-          this.calcValue += e;
-        } else {
-          // console.error('ЧИСЛО: ', e, this.calcValue, this.isResult);
-          this.calcValue = e;
-        }
-        this.isResult = false;
-      } else {
-        if (this.lastEventValueType === typeof e && typeof e === 'string') {
-          this.deleteLastChar();
-          this.calcValue += e.toString();
-        } else {
-          if (this.calcValue === 0 || this.calcValue === '0') {
-            // console.error('НУЛЬ: ', e, this.calcValue, this.isResult);
-            if (typeof e === "number") {
-              this.calcValue = e.toString()
-            } else {
-              // если в значении находится ноль и  пришел знак действия
-              // ничего неделаю
-            }
-          } else {
-            this.calcValue += e.toString();
-          }
-        }
-      }
-      this.lastEventValueType = typeof e;
-      // console.warn('END: ', e, this.calcValue, this.isResult);
-    },
-    applyResult() {
-      this.$emit('input', this.calcValue);
-      this.hideInterface();
-    },
-    hideInterface() {
-      this.$emit('hide');
-      // TODO плохо! Нужно придумать выход!
-      // скрою стили только после отыгрыша анимации
-      setTimeout(() => {
-        this.showStyles = false;
-      }, 500);
-    },
-
-    logToValue(log) {
-      if (log) {
-        this.calcValue = log.replace(/=.*/, '');
-        this.isResult = false;
-      }
-    },
-
-
     keyboardHandler(event) {
       let allowValue = (event.key).match(/[0-9%/*\-+=.,]|Backspace|Enter/);
       if (Array.isArray(allowValue) && allowValue.input) {
@@ -183,8 +131,13 @@ export default {
       this.prepareInput(value);
     },
     prepareInput(value) {
+      this.isResult = false;
       let inputIsAction = Number.isNaN(Number.parseInt(value));
-      let lastSimbolIsAction = Number.isNaN(Number.parseInt(this.expresion.slice(-1)))
+      let lastSimbolIsAction = Number.isNaN(Number.parseInt(this.expresion.slice(-1)));
+
+      // заменим запятую на точку для универсальности при разных раскладках
+      if (value === ',') value = '.';
+
       console.log({value, expresion: this.expresion, inputIsAction, lastSimbolIsAction});
       if (inputIsAction && lastSimbolIsAction) {
         // провожу замену символа действия
@@ -196,10 +149,16 @@ export default {
           this.expresion = this.expresion.slice(0, -1);
         }
         return this.calculate(); // расчитываю результат по выражению
+      } else if(inputIsAction && value === '.') {
+        // есть ли в последней части выражения знак разделения .
+        let lastToken = this.expresion.split(/[/*\-+]/).slice(-1);
+        // если знак . присутствует - игнорю
+        if(Array.isArray(lastToken) && lastToken[0].indexOf('.') > -1){
+          return;
+        }
+      } else {
+        console.error('Необработаное условие.');
       }
-
-      // заменим запятую на точку для универсальности при разных раскладках
-      if (value === ',') value = '.';
 
       // если выражение не изменялось и пытаются ввести 0 - игнорим
       if (this.expresion === '0') {
@@ -218,7 +177,9 @@ export default {
 
       // пробуем выполнить операцию
       try {
-        this.expresion = eval(this.expresion).toString();
+        let result = eval(this.expresion);
+        console.warn('result',result, typeof result)
+        this.expresion = Number.isInteger(result) ? result.toString():parseFloat(result.toFixed(this.floatResultFixedCount)).toString();
         this.isResult = true;
         this.logs.push(log + `=${this.expresion}`);
       } catch {
@@ -236,6 +197,18 @@ export default {
         this.applyResult();
       }
     },
+    applyResult() {
+      this.$emit('input', this.calcValue);
+      this.hideInterface();
+    },
+    hideInterface() {
+      this.$emit('hide');
+      // скрою стили только после отыгрыша анимации
+      // TODO плохо! Нужно придумать выход!
+      setTimeout(() => {
+        this.showStyles = false;
+      }, 500);
+    },
     clear() {
       this.expresion = '0';
       this.isResult = false;
@@ -247,6 +220,12 @@ export default {
         if (!this.expresion) {
           this.expresion = '0';
         }
+      }
+    },
+    logToValue(log) {
+      if (log) {
+        this.expresion = log.replace(/=.*/, '');
+        this.isResult = false;
       }
     },
   },

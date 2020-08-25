@@ -21,6 +21,10 @@ export default {
       type: [Number, String],
       default: 9999
     },
+    floatResultFixedCount: {
+      type: Number,
+      default: 3
+    },
     textColor: {
       type: String,
       default: '#ffffff'
