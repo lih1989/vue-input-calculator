@@ -139,10 +139,12 @@ export default {
       if (value === ',') value = '.';
 
       console.log({value, expresion: this.expresion, inputIsAction, lastSimbolIsAction});
-      if (inputIsAction && lastSimbolIsAction) {
+      if (inputIsAction && lastSimbolIsAction && value !== '.' && (value !== 'Backspace' && value !== 'Enter' && value !== '=')) {
+        console.error(1);
         // провожу замену символа действия
         return this.expresion = this.expresion.slice(0, -1) + value;
       } else if (inputIsAction && (value === 'Enter' || value === '=')) {
+        console.error(2);
         // проверю наличие незавершенного выражения - мат действия в конце
         // при наличии удаляю знак c конца и провожу вычисления
         if (lastSimbolIsAction) {
@@ -150,14 +152,24 @@ export default {
         }
         return this.calculate(); // расчитываю результат по выражению
       } else if(inputIsAction && value === '.') {
+        console.error(3);
         // есть ли в последней части выражения знак разделения .
         let lastToken = this.expresion.split(/[/*\-+]/).slice(-1);
+        let lastSimbol = this.expresion.slice(-1);
         // если знак . присутствует - игнорю
-        if(Array.isArray(lastToken) && lastToken[0].indexOf('.') > -1){
+        console.warn({lastToken, lastSimbol})
+        if(Array.isArray(lastToken) && (lastToken[0].indexOf('.') > -1 || lastSimbolIsAction)){
           return;
+        } else {
+          console.error('Необработаное условие.');
+          this.expresion += value;
+          return
         }
+      } else if(value === 'Backspace') {
+        console.error(4);
+        return this.deleteLastChar();
       } else {
-        console.error('Необработаное условие.');
+        console.error(6);
       }
 
       // если выражение не изменялось и пытаются ввести 0 - игнорим
@@ -169,6 +181,7 @@ export default {
           return this.expresion = value;
         }
       }
+      console.error(5);
       this.expresion += value;
       console.error('prepareInput', value);
     },
