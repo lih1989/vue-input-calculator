@@ -150,6 +150,9 @@ export default {
         if (lastSimbolIsAction) {
           this.expresion = this.expresion.slice(0, -1);
         }
+        // TODO разобрать выражение на части спарсить числа и собрать снова - чтобы не было ошибок с 5+09 = ERROR
+        // this.expresion = this.expresion.split(/[/*\-+]/).map(token => Number.parseFloat(token)).join('')
+
         return this.calculate(); // расчитываю результат по выражению
       } else if(inputIsAction && value === '.') {
         console.error(3);
