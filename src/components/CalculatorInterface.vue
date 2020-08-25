@@ -184,15 +184,20 @@ export default {
     },
     prepareInput(value) {
       let inputIsAction = Number.isNaN(Number.parseInt(value));
-      // если клиент хочет сделать расчёт выражения
-      if (value.match(/=|Enter/)) {
-        // проверю наличие мат действия в конце
+      let lastSimbolIsAction = Number.isNaN(Number.parseInt(this.expresion.slice(-1)))
+      console.log({value, expresion: this.expresion, inputIsAction, lastSimbolIsAction});
+      if (inputIsAction && lastSimbolIsAction) {
+        // провожу замену символа действия
+        return this.expresion = this.expresion.slice(0, -1) + value;
+      } else if (inputIsAction && (value === 'Enter' || value === '=')) {
+        // проверю наличие незавершенного выражения - мат действия в конце
         // при наличии удаляю знак c конца и провожу вычисления
-        if (this.expresion.match(/.*[/*\-+]$/)) {
+        if (lastSimbolIsAction) {
           this.expresion = this.expresion.slice(0, -1);
         }
-        return this.calculate();
+        return this.calculate(); // расчитываю результат по выражению
       }
+
       // заменим запятую на точку для универсальности при разных раскладках
       if (value === ',') value = '.';
 
@@ -206,7 +211,7 @@ export default {
         }
       }
       this.expresion += value;
-      console.error('prepareInput', value, {inputIsAction});
+      console.error('prepareInput', value);
     },
     calculate() {
       let log = this.expresion;
@@ -217,7 +222,7 @@ export default {
         this.isResult = true;
         this.logs.push(log + `=${this.expresion}`);
       } catch {
-        console.log('Error eval: ',this.expresion);
+        console.log('Error eval: ', this.expresion);
       }
 
       // прокрутим лог к последнему действию
