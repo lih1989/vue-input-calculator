@@ -11,8 +11,8 @@
                                   @click="logToValue(log)">{{ log }}</span>
           </div>
 
-          <input :readonly="readonlyInput"
-                 type="string"
+          <input readonly
+                 type="text"
                  inputmode="decimal"
                  class="calculator-input"
                  v-model.number="calcValue"
@@ -112,7 +112,6 @@ export default {
     "isHistoryLogs",
     "autoApply",
     "persistent",
-    "readonlyInput",
     "show"
   ],
   data() {

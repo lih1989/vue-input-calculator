@@ -19,7 +19,7 @@ export default {
     },
     zIndex: {
       type: [Number, String],
-      default: 1
+      default: 9999
     },
     textColor: {
       type: String,
@@ -60,13 +60,7 @@ export default {
     persistent: { // закрытие при клике на подложку
       type: Boolean,
       default: false
-    },
-    // запретить редактировать поле ввода калькулятора
-    // чтобы не появлялась клавиатура ввода на мобильнызх устройствах
-    readonlyInput: {
-      type: Boolean,
-      default: true
-    },
+    }
   },
   data() {
     return {
