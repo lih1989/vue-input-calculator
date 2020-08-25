@@ -115,7 +115,6 @@ export default {
       showStyles: false,
       isResult: false, // последнее действие было расчётом результата
       lastEventValueType: null, // тип данных последнего нажатия - для блокировки нескольких знаков действия подряд
-      calcValue: '0',
       expresion: '0',
       logs: []
     }
@@ -214,7 +213,7 @@ export default {
       }
     },
     applyResult() {
-      this.$emit('input', this.calcValue);
+      this.$emit('input', this.expresion);
       this.hideInterface();
     },
     hideInterface() {
@@ -273,7 +272,7 @@ export default {
     show(newValue) {
       if (newValue) {
         document.body.style.overflow = "hidden";
-        this.calcValue = this.value.toString();
+        this.expresion = this.value.toString();
         this.showStyles = true;
         document.addEventListener('keydown', this.keyboardHandler);
       } else {
