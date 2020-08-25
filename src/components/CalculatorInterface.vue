@@ -221,8 +221,11 @@ export default {
       }
     },
     keyboardHandler(event){
-      let allowValue = (event.key).match(/[0-9%/*\-+=]|Backspace|Enter/);
+      let allowValue = (event.key).match(/[0-9%/*\-+=.,]|Backspace|Enter/);
       if(Array.isArray(allowValue) &&  allowValue.input){
+        // заменим запятую на точку
+        if (allowValue.input === ',') allowValue.input = '.';
+
         let inputIsAction = Number.isNaN(Number.parseInt(allowValue.input));
         console.error('keyboardHandler', allowValue.input,{inputIsAction});
       }
