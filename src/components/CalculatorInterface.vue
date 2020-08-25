@@ -14,7 +14,7 @@
           <input readonly
                  type="text"
                  class="calculator-input"
-                 v-model.number="calcValue">
+                 v-model="expresion">
 
           <div class="calculator-row">
             <div class="calculator-col">
@@ -27,62 +27,62 @@
               <button class="calculator-btn gray action" @click="changePolar">&plusmn;</button>
             </div>
             <div class="calculator-col">
-              <button class="calculator-btn accent action" @click="addExpresion('/')">/</button>
+              <button class="calculator-btn accent action" @click="touchHandler('/')">/</button>
             </div>
           </div>
           <div class="calculator-row">
             <div class="calculator-col">
-              <button class="calculator-btn" @click="addExpresion(7)">7</button>
+              <button class="calculator-btn" @click="touchHandler('7')">7</button>
             </div>
             <div class="calculator-col">
-              <button class="calculator-btn" @click="addExpresion(8)">8</button>
+              <button class="calculator-btn" @click="touchHandler('8')">8</button>
             </div>
             <div class="calculator-col">
-              <button class="calculator-btn" @click="addExpresion(9)">9</button>
+              <button class="calculator-btn" @click="touchHandler('9')">9</button>
             </div>
             <div class="calculator-col">
-              <button class="calculator-btn accent action" @click="addExpresion('*')">*</button>
-            </div>
-          </div>
-          <div class="calculator-row">
-            <div class="calculator-col">
-              <button class="calculator-btn" @click="addExpresion(4)">4</button>
-            </div>
-            <div class="calculator-col">
-              <button class="calculator-btn" @click="addExpresion(5)">5</button>
-            </div>
-            <div class="calculator-col">
-              <button class="calculator-btn" @click="addExpresion(6)">6</button>
-            </div>
-            <div class="calculator-col">
-              <button class="calculator-btn accent action" @click="addExpresion('-')">-</button>
+              <button class="calculator-btn accent action" @click="touchHandler('*')">*</button>
             </div>
           </div>
           <div class="calculator-row">
             <div class="calculator-col">
-              <button class="calculator-btn" @click="addExpresion(1)">1</button>
+              <button class="calculator-btn" @click="touchHandler('4')">4</button>
             </div>
             <div class="calculator-col">
-              <button class="calculator-btn" @click="addExpresion(2)">2</button>
+              <button class="calculator-btn" @click="touchHandler('5')">5</button>
             </div>
             <div class="calculator-col">
-              <button class="calculator-btn" @click="addExpresion(3)">3</button>
+              <button class="calculator-btn" @click="touchHandler('6')">6</button>
             </div>
             <div class="calculator-col">
-              <button class="calculator-btn accent action" @click="addExpresion('+')">+</button>
+              <button class="calculator-btn accent action" @click="touchHandler('-')">-</button>
+            </div>
+          </div>
+          <div class="calculator-row">
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="touchHandler('1')">1</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="touchHandler('2')">2</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn" @click="touchHandler('3')">3</button>
+            </div>
+            <div class="calculator-col">
+              <button class="calculator-btn accent action" @click="touchHandler('+')">+</button>
             </div>
           </div>
           <div class="calculator-row">
             <div class="calculator-col wide">
-              <button class="calculator-btn" @click="addExpresion(0)">0</button>
+              <button class="calculator-btn" @click="touchHandler('0')">0</button>
             </div>
             <div class="calculator-col">
-              <button class="calculator-btn action" @click="addExpresion('.')">.</button>
+              <button class="calculator-btn action" @click="touchHandler('.')">.</button>
             </div>
             <div class="calculator-col">
               <button v-if="isResult" class="calculator-btn success action" @click="applyResult">ок
               </button>
-              <button v-else class="calculator-btn accent action" @click="getResult">=</button>
+              <button v-else class="calculator-btn accent action" @click="calculate">=</button>
             </div>
           </div>
         </div>
@@ -118,6 +118,7 @@ export default {
       isResult: false, // последнее действие было расчётом результата
       lastEventValueType: null, // тип данных последнего нажатия - для блокировки нескольких знаков действия подряд
       calcValue: '0',
+      expresion: '0',
       logs: []
     }
   },
@@ -154,29 +155,6 @@ export default {
       this.lastEventValueType = typeof e;
       // console.warn('END: ', e, this.calcValue, this.isResult);
     },
-    getResult() {
-      // проверю наличие мат действия в конце
-      // при наличии удаляю знаки провожу вычисления
-      if (this.calcValue.match(/.*[/*\-+]$/)) {
-        this.calcValue = this.calcValue.slice(0, -1);
-      }
-
-      let log = this.calcValue;
-      this.calcValue = eval(this.calcValue).toString();
-      this.isResult = true;
-      this.logs.push(log + `=${this.calcValue}`);
-
-      // прокрутим лог к последнему действию
-      if (this.$refs.historyLog) {
-        this.$nextTick(() => {
-          this.$refs.historyLog.scrollTop = this.$refs.historyLog.scrollHeight;
-        });
-      }
-
-      if (this.autoApply) {
-        this.applyResult();
-      }
-    },
     applyResult() {
       this.$emit('input', this.calcValue);
       this.hideInterface();
@@ -196,43 +174,83 @@ export default {
         this.isResult = false;
       }
     },
-    changePolar() {
-      console.log('changePolar ', this.calcValue);
-      if (this.calcValue !== '0') {
-        let regex = /^-/;
-        if (this.calcValue.match(regex)) {
-          this.calcValue = this.calcValue.replace(regex, '');
-        } else {
-          this.calcValue = `-${this.calcValue}`;
+
+
+    keyboardHandler(event){
+      let allowValue = (event.key).match(/[0-9%/*\-+=.,]|Backspace|Enter/);
+      if(Array.isArray(allowValue) && allowValue.input){
+        this.prepareInput(allowValue.input);
+      }
+    },
+    touchHandler(value){
+      this.prepareInput(value);
+    },
+    prepareInput(value){
+      // заменим запятую на точку для универсальности при разных раскладках
+      if (value === ',') value = '.';
+      // если строка выражения не изменялась
+      if (value === '0'){
+        if(this.expresion === '0' || this.expresion === '-0'){
+          value = ''
         }
+      }
+      // if (value === '.')
+
+      if(value){
+        let inputIsAction = Number.isNaN(Number.parseInt(value));
+
+        this.expresion += value;
+        console.error('prepareInput', value, {inputIsAction});
+      }else{
+        // значение обнулено - значит ничего не нужно делать
+        console.error('prepareInput', value);
+      }
+    },
+    calculate() {
+      // проверю наличие мат действия в конце
+      // при наличии удаляю знаки провожу вычисления
+      if (this.expresion.match(/.*[/*\-+]$/)) {
+        this.expresion = this.expresion.slice(0, -1);
+      }
+
+      let log = this.expresion;
+      this.expresion = eval(this.expresion).toString();
+      this.isResult = true;
+      this.logs.push(log + `=${this.expresion}`);
+
+      // прокрутим лог к последнему действию
+      if (this.$refs.historyLog) {
+        this.$nextTick(() => {
+          this.$refs.historyLog.scrollTop = this.$refs.historyLog.scrollHeight;
+        });
+      }
+
+      if (this.autoApply) {
+        this.applyResult();
+      }
+    },
+    changePolar() {
+      console.log('changePolar ', this.expresion);
+      let regex = /^-/;
+      if (this.expresion.match(regex)) {
+        this.expresion = this.expresion.replace(regex, '');
+      } else {
+        this.expresion = `-${this.expresion}`;
       }
     },
     clear() {
-      this.calcValue = '0';
+      this.expresion = '0';
       this.isResult = false;
     },
     deleteLastChar() {
-      console.log('deleteLastChar ', this.calcValue);
-      if (this.calcValue !== '0') {
-        this.calcValue = this.calcValue.slice(0, -1);
-        if (!this.calcValue) {
-          this.calcValue = '0';
+      console.log('deleteLastChar ', this.expresion);
+      if (this.expresion !== '0') {
+        this.expresion = this.expresion.slice(0, -1);
+        if (!this.expresion) {
+          this.expresion = '0';
         }
       }
     },
-    keyboardHandler(event){
-      let allowValue = (event.key).match(/[0-9%/*\-+=.,]|Backspace|Enter/);
-      if(Array.isArray(allowValue) &&  allowValue.input){
-        // заменим запятую на точку
-        if (allowValue.input === ',') allowValue.input = '.';
-
-        let inputIsAction = Number.isNaN(Number.parseInt(allowValue.input));
-        console.error('keyboardHandler', allowValue.input,{inputIsAction});
-      }
-    },
-    touchHandler(event){
-      console.error('touchHandler', event);
-    }
   },
   computed: {
     styleVars() {
@@ -264,13 +282,6 @@ export default {
         document.body.style.overflow = "hidden";
         this.calcValue = this.value.toString();
         this.showStyles = true;
-        // this.$nextTick(()=>{
-        //   let buttons = this.$el.getElementsByClassName('calculator-btn');
-        //   for (let btn of buttons){
-        //     console.error("show true", btn);
-        //     btn
-        //   }
-        // })
         document.addEventListener('keydown', this.keyboardHandler);
       } else {
         document.body.style.overflow = "initial";
