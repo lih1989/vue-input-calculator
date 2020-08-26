@@ -1,6 +1,6 @@
 {
   "name": "vue-input-calculator",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Calculator input component. Mobile friendly.",
   "homepage": "https://lih1989.github.io/vue-input-calculator/",
   "main": "./lib/vue-input-calculator.common.js",

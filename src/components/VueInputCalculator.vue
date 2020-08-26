@@ -64,6 +64,10 @@ export default {
     persistent: { // закрытие при клике на подложку
       type: Boolean,
       default: false
+    },
+    enableKeyboard: { // нужен ли ввод с клавиатуры
+      type: Boolean,
+      default: false
     }
   },
   data() {

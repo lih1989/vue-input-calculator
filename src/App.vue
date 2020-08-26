@@ -27,12 +27,20 @@
           Calc
         </VueInputCalculator>
       </div>
-      <div class="input-label">Color Styling:</div>
+      <div class="input-label">
+        <div>
+          Color Styling:
+        </div>
+        <small>
+          hide history, enable-keyboard
+        </small>
+      </div>
       <div class="sample">
         <input type="number" v-model.number="inputSimple"/>
 
         <VueInputCalculator v-model="inputSimple"
-                            :is-history-logs="true"
+                            enableKeyboard
+                            :is-history-logs="false"
                             textColor="#ffffff"
                             bgColor="#151515"
                             eventButtonsBgColor="#333333"
@@ -54,16 +62,17 @@
         </VueInputCalculator>
       </div>
       <div class="input-label">
-        Props:
+        <div>
+          Other props:
+        </div>
         <small>
-          is-history-logs, auto-apply, persistent
+          auto-apply, persistent
         </small>
       </div>
       <div class="sample">
         <input type="number" v-model.number="inputSimple"/>
         <VueInputCalculator v-model="inputSimple"
-                            :is-history-logs="false"
-                            :auto-apply="true"
+                            autoApply
                             :persistent="true">
           <button style="height: 34px;background-color: #2c3e50;color: white; font-weight: 600">+/-</button>
         </VueInputCalculator>

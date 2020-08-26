@@ -60,6 +60,7 @@ Props(Parameter) | Type | Default | Description
 --------- | ---- | ------- | -----------
 v-model (*required*) | `String, Number` | - | target input value
 auto-apply | `Boolean` | `false` | auto continue/close on calc result
+enable-keyboard | `Boolean` | `false` | enable keyboard input
 persistent | `Boolean` | `false` | disable backdrop click to cancel (outside click)
 readonly-input | `Boolean` | `true` | calculator input read only
 is-history-logs | `Boolean` | `true` | show math operations log

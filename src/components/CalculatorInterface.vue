@@ -96,6 +96,7 @@ export default {
   name: "CalculatorInterface",
   props: [
     "value",
+    "enableKeyboard",
     "zIndex",
     "textColor",
     "triggerWrapperClass",
@@ -180,63 +181,16 @@ export default {
           if (Array.isArray(this.expresion.split(/[/*\-+]/)) && (this.expresion.split(/[/*\-+]/).slice(-1)[0].indexOf('.') > -1 || lastSimbolIsAction)) {
             break;
           } else {
-            console.error('Необработаное условие.', this.expresion.split(/[/*\-+]/).slice(-1).indexOf('.'));
             this.isResult = false;
             this.expresion += value;
           }
           break;
         default:
           this.isResult = false;
-          console.error(5);
           this.expresion += value;
           console.error('prepareInput', value);
           break;
       }
-
-      // if (inputIsAction && lastSimbolIsAction && value !== '.' && value !== '=') {
-      //   console.error(1);
-      //   // провожу замену символа действия
-      //   return this.expresion = this.expresion.slice(0, -1) + value;
-      // } else if (inputIsAction && value === '=') {
-      //   console.error(2, this.isResult);
-      //   // проверю наличие незавершенного выражения - мат действия в конце
-      //   // при наличии удаляю знак c конца и провожу вычисления
-      //   if (lastSimbolIsAction) {
-      //     this.expresion = this.expresion.slice(0, -1);
-      //   }
-      //   return this.isResult ? this.applyResult() : this.calculate(); // расчитываю результат по выражению
-      // } else if (inputIsAction && value === '.') {
-      //   console.error(3);
-      //   // есть ли в последней части выражения знак разделения .
-      //   let lastToken = this.expresion.split(/[/*\-+]/).slice(-1);
-      //   let lastSimbol = this.expresion.slice(-1);
-      //   // если знак . присутствует - игнорю
-      //   console.warn({lastToken, lastSimbol})
-      //   if (Array.isArray(lastToken) && (lastToken[0].indexOf('.') > -1 || lastSimbolIsAction)) {
-      //     return;
-      //   } else {
-      //     console.error('Необработаное условие.');
-      //     // this.expresion += value; ниже есть такое действие по дефолту
-      //     // return
-      //   }
-      // } else {
-      //   console.error(6);
-      // }
-      //
-      // this.isResult = false;
-      //
-      // // если выражение не изменялось и пытаются ввести 0 - игнорим
-      // if (this.expresion === '0') {
-      //   if (value === '0') {
-      //     // значение обнулено - значит ничего не нужно делать
-      //     return '';
-      //   } else if (!inputIsAction) {
-      //     return this.expresion = value;
-      //   }
-      // }
-      // console.error(5);
-      // this.expresion += value;
-      // console.error('prepareInput', value);
     },
     calculate() {
       let log = this.expresion;
@@ -265,30 +219,32 @@ export default {
         numbers,
         valideExpresion: this.expresion
       });
+
       // пробуем выполнить операцию
       try {
         let result = eval(this.expresion);
-        console.warn('result', result, typeof result);
+        console.warn({result});
         this.expresion = Number.isInteger(result) ? result.toString() : parseFloat(result.toFixed(this.floatResultFixedCount)).toString();
         this.isResult = true;
         this.logs.push(log + `=${this.expresion}`);
       } catch {
-        console.log('Error eval: ', this.expresion);
+        alert('Error eval: ' + this.expresion);
       }
 
       // прокрутим лог к последнему действию
-      if (this.$refs.historyLog) {
-        this.$nextTick(() => {
+      this.$nextTick(() => {
+        if (this.$refs.historyLog) {
           this.$refs.historyLog.scrollTop = this.$refs.historyLog.scrollHeight;
-        });
-      }
+        }
+      });
 
       if (this.autoApply) {
         this.applyResult();
       }
     },
     applyResult() {
-      this.$emit('input', this.expresion);
+      let resultNotNumber = Number.isNaN(Number.parseInt(this.expresion));
+      this.$emit('input', resultNotNumber ? '0':this.expresion);
       this.hideInterface();
     },
     hideInterface() {
@@ -349,10 +305,15 @@ export default {
         document.body.style.overflow = "hidden";
         this.expresion = this.value.toString();
         this.showStyles = true;
-        document.addEventListener('keydown', this.keyboardHandler);
+        // если клавиатура не используется - не множим слушателей
+        if(this.enableKeyboard){
+          document.addEventListener('keydown', this.keyboardHandler);
+        }
       } else {
         document.body.style.overflow = "initial";
-        document.removeEventListener('keydown', this.keyboardHandler);
+        if(this.enableKeyboard){
+          document.removeEventListener('keydown', this.keyboardHandler);
+        }
       }
     }
   }
