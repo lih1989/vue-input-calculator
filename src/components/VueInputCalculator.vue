@@ -74,9 +74,6 @@ export default {
     return {
       show: false
     }
-  },
-  mounted() {
-    console.log(this.$options.name)
   }
 }
 </script>

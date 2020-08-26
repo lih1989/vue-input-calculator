@@ -117,7 +117,8 @@ export default {
       isResult: false, // последнее действие было расчётом результата
       lastEventValueType: null, // тип данных последнего нажатия - для блокировки нескольких знаков действия подряд
       expresion: '0',
-      logs: []
+      logs: [],
+      error: false
     }
   },
   methods: {
@@ -143,7 +144,7 @@ export default {
       let lastSimbol = this.expresion.slice(-1);
       let lastSimbolIsAction = Number.isNaN(Number.parseInt(lastSimbol));
 
-      console.log({value, expresion: this.expresion, inputIsAction, lastSimbolIsAction, lastSimbol});
+      // console.log({value, expresion: this.expresion, inputIsAction, lastSimbolIsAction, lastSimbol});
 
       // если выражение не изменялось и пытаются ввести 0 - игнорим
       if (this.expresion === '0') {
@@ -157,16 +158,16 @@ export default {
 
       switch (true) {
         case inputIsAction && lastSimbolIsAction && value !== '.' && value !== '=':
-          console.error(1);
+          // console.error(1);
           // провожу замену последнего символа
           this.expresion = this.expresion.slice(0, -1) + value;
           break;
         case inputIsAction && value === '=':
-          console.error(2, this.isResult);
+          // console.error(2, this.isResult);
           // проверю наличие незавершенного выражения - мат действия в конце
           // при наличии удаляю знак c конца и провожу вычисления
           if (lastSimbolIsAction) {
-            console.error(21);
+            // console.error(21);
             this.expresion = this.expresion.slice(0, -1);
           }
           if (this.isResult) {
@@ -176,7 +177,7 @@ export default {
           }
           break;
         case inputIsAction && value === '.':
-          console.error(3);
+          // console.error(3);
           // если знак . присутствует - игнорю
           if (Array.isArray(this.expresion.split(/[/*\-+]/)) && (this.expresion.split(/[/*\-+]/).slice(-1)[0].indexOf('.') > -1 || lastSimbolIsAction)) {
             break;
@@ -188,7 +189,7 @@ export default {
         default:
           this.isResult = false;
           this.expresion += value;
-          console.error('prepareInput', value);
+          // console.error('prepareInput', value);
           break;
       }
     },
@@ -214,21 +215,22 @@ export default {
         return str
       }, "");
 
-      console.error({
-        actions,
-        numbers,
-        valideExpresion: this.expresion
-      });
+      // console.error({
+      //   actions,
+      //   numbers,
+      //   valideExpresion: this.expresion
+      // });
 
       // пробуем выполнить операцию
       try {
         let result = eval(this.expresion);
-        console.warn({result});
-        this.expresion = Number.isInteger(result) ? result.toString() : parseFloat(result.toFixed(this.floatResultFixedCount)).toString();
+        // console.warn({result},Number.isInteger(result));
+        this.expresion = Number.isInteger(result) ? result.toString() : parseFloat(result).toFixed(this.floatResultFixedCount);
         this.isResult = true;
         this.logs.push(log + `=${this.expresion}`);
       } catch {
-        alert('Error eval: ' + this.expresion);
+        // alert('Error eval: ' + this.expresion);
+        this.error = true;
       }
 
       // прокрутим лог к последнему действию
@@ -260,7 +262,7 @@ export default {
       this.isResult = false;
     },
     deleteLastChar() {
-      console.log('deleteLastChar ', this.expresion);
+      // console.log('deleteLastChar ', this.expresion);
       if (this.expresion !== '0') {
         this.expresion = this.expresion.slice(0, -1);
         if (!this.expresion) {
@@ -317,9 +319,6 @@ export default {
       }
     }
   },
-  mounted() {
-    console.log(this.$options.name)
-  }
 }
 </script>
 
