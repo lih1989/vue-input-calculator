@@ -177,10 +177,10 @@ export default {
         case inputIsAction && value === '.':
           console.error(3);
           // если знак . присутствует - игнорю
-          if (Array.isArray(this.expresion.split(/[/*\-+]/)) && (this.expresion.split(/[/*\-+]/).slice(-1).indexOf('.') > -1 || lastSimbolIsAction)) {
+          if (Array.isArray(this.expresion.split(/[/*\-+]/)) && (this.expresion.split(/[/*\-+]/).slice(-1)[0].indexOf('.') > -1 || lastSimbolIsAction)) {
             break;
           } else {
-            console.error('Необработаное условие.');
+            console.error('Необработаное условие.', this.expresion.split(/[/*\-+]/).slice(-1).indexOf('.'));
             this.isResult = false;
             this.expresion += value;
           }
@@ -244,25 +244,25 @@ export default {
       // Разобрать выражение на части спарсить числа и собрать снова
       // используя parseFloat - чтобы не было ошибок с 5+09 = ERROR
       let regex = /[/*\-+]/g;
-      let resultActions = this.expresion.match(regex);
-      if (!resultActions) {
+      let actions = this.expresion.match(regex);
+      if (!actions) {
         return this.isResult = true;
       }
-      let resultNumbers = this.expresion.split(regex);
-      this.expresion = resultNumbers.reduce((str, currNum, index) => {
+      let numbers = this.expresion.split(regex);
+      this.expresion = numbers.reduce((str, currNum, index) => {
         // если выражение начинается с отрицательного значения "-"
         // то игнорю пустое текущее значение и поставим только знак действия
         if (currNum) {
-          str = str + parseFloat(currNum) + (resultActions[index] || '');
+          str = str + parseFloat(currNum) + (actions[index] || '');
         } else {
-          str = str + (resultActions[index] || '');
+          str = str + (actions[index] || '');
         }
         return str
       }, "");
 
       console.error({
-        resultActions,
-        resultNumbers,
+        actions,
+        numbers,
         valideExpresion: this.expresion
       });
       // пробуем выполнить операцию
