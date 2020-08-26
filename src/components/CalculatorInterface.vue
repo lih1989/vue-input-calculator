@@ -122,8 +122,15 @@ export default {
   methods: {
     keyboardHandler(event) {
       let allowValue = (event.key).match(/[0-9%/*\-+=.,]|Backspace|Enter/);
-      if (Array.isArray(allowValue) && allowValue.input) {
-        this.prepareInput(allowValue.input);
+      let input = allowValue ? allowValue.input : null;
+      if (input) {
+        // адаптация ключа клавиши под общий стандарт
+        // заменим запятую на точку для универсальности при разных раскладках
+        if (input === ',') input = '.';
+        if (input === 'Enter') input = '=';
+        if (input === 'Backspace') return this.deleteLastChar();
+
+        this.prepareInput(input);
       }
     },
     touchHandler(value) {
@@ -133,22 +140,19 @@ export default {
       let inputIsAction = Number.isNaN(Number.parseInt(value));
       let lastSimbolIsAction = Number.isNaN(Number.parseInt(this.expresion.slice(-1)));
 
-      // заменим запятую на точку для универсальности при разных раскладках
-      if (value === ',') value = '.';
-
       console.log({value, expresion: this.expresion, inputIsAction, lastSimbolIsAction});
-      if (inputIsAction && lastSimbolIsAction && value !== '.' && (value !== 'Backspace' && value !== 'Enter' && value !== '=')) {
+      if (inputIsAction && lastSimbolIsAction && value !== '.' && value !== '=') {
         console.error(1);
         // провожу замену символа действия
         return this.expresion = this.expresion.slice(0, -1) + value;
-      } else if (inputIsAction && (value === 'Enter' || value === '=')) {
+      } else if (inputIsAction && value === '=') {
         console.error(2, this.isResult);
         // проверю наличие незавершенного выражения - мат действия в конце
         // при наличии удаляю знак c конца и провожу вычисления
         if (lastSimbolIsAction) {
           this.expresion = this.expresion.slice(0, -1);
         }
-        return this.isResult ? this.applyResult() : this.calculate(); // расчитываю результат по выражению
+        return this.isResult ? this.applyResult():this.calculate(); // расчитываю результат по выражению
       } else if(inputIsAction && value === '.') {
         console.error(3);
         // есть ли в последней части выражения знак разделения .
@@ -160,15 +164,14 @@ export default {
           return;
         } else {
           console.error('Необработаное условие.');
-          this.expresion += value;
-          return
+          // this.expresion += value; ниже есть такое действие по дефолту
+          // return
         }
-      } else if(value === 'Backspace') {
-        console.error(4);
-        return this.deleteLastChar();
       } else {
         console.error(6);
       }
+
+      this.isResult = false;
 
       // если выражение не изменялось и пытаются ввести 0 - игнорим
       if (this.expresion === '0') {
@@ -182,8 +185,6 @@ export default {
       console.error(5);
       this.expresion += value;
       console.error('prepareInput', value);
-
-      this.isResult = false;
     },
     calculate() {
       let log = this.expresion;
