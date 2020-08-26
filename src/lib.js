@@ -1,4 +1,4 @@
 import VueInputCalculator from './components/VueInputCalculator'
-export {
-    VueInputCalculator
+export default {
+    "VueInputCalculator": VueInputCalculator
 }

@@ -36,7 +36,7 @@ Vue.component('vue-input-calculator', VueInputCalculator);
 <template>
   <div>
       <input type="number" v-model.number="targetValue"/>
-      <VueInputCalculator v-model="targetValue">
+      <VueInputCalculator enableKeyboard v-model="targetValue">
         CALC
       </VueInputCalculator>
   </div>
