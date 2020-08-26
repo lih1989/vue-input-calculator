@@ -138,53 +138,105 @@ export default {
     },
     prepareInput(value) {
       let inputIsAction = Number.isNaN(Number.parseInt(value));
-      let lastSimbolIsAction = Number.isNaN(Number.parseInt(this.expresion.slice(-1)));
+      // последний симовол выражения
+      let lastSimbol = this.expresion.slice(-1);
+      let lastSimbolIsAction = Number.isNaN(Number.parseInt(lastSimbol));
 
-      console.log({value, expresion: this.expresion, inputIsAction, lastSimbolIsAction});
-      if (inputIsAction && lastSimbolIsAction && value !== '.' && value !== '=') {
-        console.error(1);
-        // провожу замену символа действия
-        return this.expresion = this.expresion.slice(0, -1) + value;
-      } else if (inputIsAction && value === '=') {
-        console.error(2, this.isResult);
-        // проверю наличие незавершенного выражения - мат действия в конце
-        // при наличии удаляю знак c конца и провожу вычисления
-        if (lastSimbolIsAction) {
-          this.expresion = this.expresion.slice(0, -1);
-        }
-        return this.isResult ? this.applyResult():this.calculate(); // расчитываю результат по выражению
-      } else if(inputIsAction && value === '.') {
-        console.error(3);
-        // есть ли в последней части выражения знак разделения .
-        let lastToken = this.expresion.split(/[/*\-+]/).slice(-1);
-        let lastSimbol = this.expresion.slice(-1);
-        // если знак . присутствует - игнорю
-        console.warn({lastToken, lastSimbol})
-        if(Array.isArray(lastToken) && (lastToken[0].indexOf('.') > -1 || lastSimbolIsAction)){
-          return;
-        } else {
-          console.error('Необработаное условие.');
-          // this.expresion += value; ниже есть такое действие по дефолту
-          // return
-        }
-      } else {
-        console.error(6);
-      }
-
-      this.isResult = false;
+      console.log({value, expresion: this.expresion, inputIsAction, lastSimbolIsAction, lastSimbol});
 
       // если выражение не изменялось и пытаются ввести 0 - игнорим
       if (this.expresion === '0') {
         if (value === '0') {
           // значение обнулено - значит ничего не нужно делать
-          return '';
+          return;
         } else if (!inputIsAction) {
           return this.expresion = value;
         }
       }
-      console.error(5);
-      this.expresion += value;
-      console.error('prepareInput', value);
+
+      switch (true) {
+        case inputIsAction && lastSimbolIsAction && value !== '.' && value !== '=':
+          console.error(1);
+          // провожу замену последнего символа
+          this.expresion = this.expresion.slice(0, -1) + value;
+          break;
+        case inputIsAction && value === '=':
+          console.error(2, this.isResult);
+          // проверю наличие незавершенного выражения - мат действия в конце
+          // при наличии удаляю знак c конца и провожу вычисления
+          if (lastSimbolIsAction) {
+            console.error(21);
+            this.expresion = this.expresion.slice(0, -1);
+          }
+          if (this.isResult) {
+            this.applyResult()
+          } else {
+            this.calculate(); // расчитываю результат по выражению
+          }
+          break;
+        case inputIsAction && value === '.':
+          console.error(3);
+          // если знак . присутствует - игнорю
+          if (Array.isArray(this.expresion.split(/[/*\-+]/)) && (this.expresion.split(/[/*\-+]/).slice(-1).indexOf('.') > -1 || lastSimbolIsAction)) {
+            break;
+          } else {
+            console.error('Необработаное условие.');
+            this.isResult = false;
+            this.expresion += value;
+          }
+          break;
+        default:
+          this.isResult = false;
+          console.error(5);
+          this.expresion += value;
+          console.error('prepareInput', value);
+          break;
+      }
+
+      // if (inputIsAction && lastSimbolIsAction && value !== '.' && value !== '=') {
+      //   console.error(1);
+      //   // провожу замену символа действия
+      //   return this.expresion = this.expresion.slice(0, -1) + value;
+      // } else if (inputIsAction && value === '=') {
+      //   console.error(2, this.isResult);
+      //   // проверю наличие незавершенного выражения - мат действия в конце
+      //   // при наличии удаляю знак c конца и провожу вычисления
+      //   if (lastSimbolIsAction) {
+      //     this.expresion = this.expresion.slice(0, -1);
+      //   }
+      //   return this.isResult ? this.applyResult() : this.calculate(); // расчитываю результат по выражению
+      // } else if (inputIsAction && value === '.') {
+      //   console.error(3);
+      //   // есть ли в последней части выражения знак разделения .
+      //   let lastToken = this.expresion.split(/[/*\-+]/).slice(-1);
+      //   let lastSimbol = this.expresion.slice(-1);
+      //   // если знак . присутствует - игнорю
+      //   console.warn({lastToken, lastSimbol})
+      //   if (Array.isArray(lastToken) && (lastToken[0].indexOf('.') > -1 || lastSimbolIsAction)) {
+      //     return;
+      //   } else {
+      //     console.error('Необработаное условие.');
+      //     // this.expresion += value; ниже есть такое действие по дефолту
+      //     // return
+      //   }
+      // } else {
+      //   console.error(6);
+      // }
+      //
+      // this.isResult = false;
+      //
+      // // если выражение не изменялось и пытаются ввести 0 - игнорим
+      // if (this.expresion === '0') {
+      //   if (value === '0') {
+      //     // значение обнулено - значит ничего не нужно делать
+      //     return '';
+      //   } else if (!inputIsAction) {
+      //     return this.expresion = value;
+      //   }
+      // }
+      // console.error(5);
+      // this.expresion += value;
+      // console.error('prepareInput', value);
     },
     calculate() {
       let log = this.expresion;
@@ -193,25 +245,31 @@ export default {
       // используя parseFloat - чтобы не было ошибок с 5+09 = ERROR
       let regex = /[/*\-+]/g;
       let resultActions = this.expresion.match(regex);
-      if(!resultActions){
+      if (!resultActions) {
         return this.isResult = true;
       }
       let resultNumbers = this.expresion.split(regex);
-      this.expresion = resultNumbers.reduce((str, currNum, index)=>{
-        str = str + parseFloat(currNum) + (resultActions[index] || '');
+      this.expresion = resultNumbers.reduce((str, currNum, index) => {
+        // если выражение начинается с отрицательного значения "-"
+        // то игнорю пустое текущее значение и поставим только знак действия
+        if (currNum) {
+          str = str + parseFloat(currNum) + (resultActions[index] || '');
+        } else {
+          str = str + (resultActions[index] || '');
+        }
         return str
-      },"");
+      }, "");
 
       console.error({
         resultActions,
         resultNumbers,
-        valideExpresion:this.expresion
+        valideExpresion: this.expresion
       });
       // пробуем выполнить операцию
       try {
         let result = eval(this.expresion);
-        console.warn('result',result, typeof result);
-        this.expresion = Number.isInteger(result) ? result.toString():parseFloat(result.toFixed(this.floatResultFixedCount)).toString();
+        console.warn('result', result, typeof result);
+        this.expresion = Number.isInteger(result) ? result.toString() : parseFloat(result.toFixed(this.floatResultFixedCount)).toString();
         this.isResult = true;
         this.logs.push(log + `=${this.expresion}`);
       } catch {
