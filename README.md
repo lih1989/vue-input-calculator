@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/dt/vue-input-calculator.svg?style=flat-square)](https://www.npmjs.com/package/vue-input-calculator)
 [![Vue 2.x](https://img.shields.io/badge/vue-2.x-brightgreen.svg?style=flat-square)](https://vuejs.org)
 
-> Calculator input component. Mobile friendly.
+> Calculator interface for input field. Touch & Keyboard input. Vue.js component. 
 ## Demo
 [View demo](https://lih1989.github.io/vue-input-calculator/)
 
