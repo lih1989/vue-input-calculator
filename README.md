@@ -64,11 +64,11 @@ enable-keyboard | `Boolean` | `false` | enable keyboard input
 persistent | `Boolean` | `false` | disable backdrop click to cancel (outside click)
 readonly-input | `Boolean` | `true` | calculator input read only
 is-history-logs | `Boolean` | `true` | show math operations log
-z-index | `String, Number` | 1 | layer calculator z-index position 
+z-index | `String, Number` | 9999 | layer calculator z-index position 
 trigger-wrapper-class | `String` | - | trigger for open calculator class styles
 text-color | `String` | `#ffffff` | calculator text color
 bg-color | `String` | `#2f2f31` | calculator background color
-event-buttons-bg-color | `String` | `#424345` | calculator buttons color(c, &rsaquo;, &plusmn;)
+event-buttons-bg-color | `String` | `#424345` | calculator buttons color(c, &rsaquo;)
 number-buttons-bg-color | `String` | `#616163` | calculator buttons color(0-9.)
 action-buttons-bg-color | `String` | `#f49e3f` | calculator buttons color(+-\*=)
 action-success-button-bg-color | `String` | `#3ff451` | calculator OK button color
