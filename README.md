@@ -9,6 +9,7 @@
 ## Demo
 [View demo](https://lih1989.github.io/vue-input-calculator/)
 
+[![demo](https://raw.githubusercontent.com/lih1989/vue-input-calculator/master/media/preview.gif)](https://lih1989.github.io/vue-input-calculator/)
 ## Install
 
 ```bash
