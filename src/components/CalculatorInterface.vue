@@ -225,7 +225,7 @@ export default {
       try {
         let result = eval(this.expresion);
         // console.warn({result},Number.isInteger(result));
-        this.expresion = Number.isInteger(result) ? result.toString() : parseFloat(result).toFixed(this.floatResultFixedCount);
+        this.expresion = Number.isInteger(result) ? result.toString() : parseFloat(parseFloat(result).toFixed(this.floatResultFixedCount)).toString();
         this.isResult = true;
         this.logs.push(log + `=${this.expresion}`);
       } catch {
