@@ -94,8 +94,9 @@
 <script>
 export default {
   name: "CalculatorInterface",
+  emits: ['hide','update:modelValue'],
   props: [
-    "value",
+    "modelValue",
     "enableKeyboard",
     "zIndex",
     "textColor",
@@ -305,7 +306,7 @@ export default {
     show(newValue) {
       if (newValue) {
         document.body.style.overflow = "hidden";
-        this.expresion = this.value.toString();
+        this.expresion = this.modelValue.toString();
         this.showStyles = true;
         // если клавиатура не используется - не множим слушателей
         if(this.enableKeyboard){
