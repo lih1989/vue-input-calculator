@@ -3,9 +3,13 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Latest Version on NPM](https://img.shields.io/npm/v/vue-input-calculator.svg?style=flat-square)](https://www.npmjs.com/package/vue-input-calculator)
 [![npm](https://img.shields.io/npm/dt/vue-input-calculator.svg?style=flat-square)](https://www.npmjs.com/package/vue-input-calculator)
-[![Vue 2.x](https://img.shields.io/badge/vue-2.x-brightgreen.svg?style=flat-square)](https://vuejs.org)
+[![Vue 3.x](https://img.shields.io/badge/vue-2.x-brightgreen.svg?style=flat-square)](https://vuejs.org)
 
-> Calculator interface for input field. Touch & Keyboard input. Vue.js component. 
+> Calculator interface for input field. Touch & Keyboard input. Vue.js component.
+> 
+> Vue 2 < ver. 1.0.0
+> 
+> Vue 3 > ver. 1.0.0
 ## Demo
 [View demo](https://lih1989.github.io/vue-input-calculator/)
 
