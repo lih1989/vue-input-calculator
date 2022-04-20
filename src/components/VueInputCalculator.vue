@@ -3,7 +3,7 @@
     <div :class="triggerWrapperClass" @click="show=!show">
       <slot>Trigger</slot>
     </div>
-    <CalculatorInterface @input="$emit('input', $event)" @hide="show=false" :show="show" v-bind="$props"/>
+    <CalculatorInterface @input="$emit('update:modelValue', $event)" @hide="show=false" :show="show" v-bind="$props"/>
   </div>
 </template>
 
@@ -12,10 +12,11 @@ import CalculatorInterface from "@/components/CalculatorInterface";
 export default {
   name: 'VueInputCalculator',
   components: {CalculatorInterface},
+  emits: ['update:modelValue'],
   props: {
-    value: {
+    modelValue: {
       type: [Number, String],
-      required: true
+      default: 0
     },
     zIndex: {
       type: [Number, String],

@@ -17,20 +17,21 @@
     "src"
   ],
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-unit-jest": "^4.5.4",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/test-utils": "^1.0.3",
-    "babel-eslint": "^10.1.0",
+    "@babel/eslint-parser": "^7",
+    "@babel/eslint-plugin": "^7",
+    "@vue/cli-plugin-babel": "~5.0",
+    "@vue/cli-plugin-eslint": "~5.0",
+    "@vue/cli-plugin-unit-jest": "^5",
+    "@vue/cli-service": "~5.0",
+    "@vue/test-utils": "^2.0.0-rc.17",
+    "@vue/vue3-jest": "^27.0.0-alpha.4",
     "core-js": "^3.6.5",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint": "^8",
+    "eslint-plugin-vue": "^8",
     "gh-pages": "^3.1.0",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.3",
-    "vue": "^2.6.11",
-    "vue-template-compiler": "^2.6.11"
+    "vue": "^3.2"
   },
   "eslintConfig": {
     "root": true,
@@ -42,7 +43,7 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     },
     "rules": {},
     "overrides": [
