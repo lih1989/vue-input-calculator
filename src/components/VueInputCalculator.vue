@@ -1,6 +1,6 @@
 <template>
   <div style="all: unset;">
-    <div :class="triggerWrapperClass" @click="show=!show">
+    <div v-if="$slots.default" :class="triggerWrapperClass" @click="show=!show">
       <slot>Trigger</slot>
     </div>
     <CalculatorInterface @input="$emit('update:modelValue', $event)" @hide="show=false" :show="place==='in-place' || show" v-bind="$props"/>
