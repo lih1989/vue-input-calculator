@@ -1,7 +1,7 @@
 <template>
   <div :style="styleVars" class="vue-input-calculator">
     <transition name="slide">
-      <div class="calc-wrapper" v-if="show">
+      <div :class="place==='in-place' ? 'calc-wrapper-inplace' : 'calc-wrapper-fixed'" v-if="show">
         <div class="calculator">
           <div class="calculator-logs"
                ref="historyLog"
@@ -110,7 +110,8 @@ export default {
     "autoApply",
     "persistent",
     "floatResultFixedCount",
-    "show"
+    "show",
+    "place",
   ],
   data() {
     return {
@@ -294,7 +295,7 @@ export default {
           alignItems: 'center',
           height: '100%',
           width: '100%',
-          position: 'absolute',
+          position: this.place === 'in-place' ? '' : 'absolute',
           top: 0,
           left: 0,
           zIndex: this.zIndex
@@ -339,120 +340,124 @@ export default {
   user-select: none; /* Non-prefixed version, currently not supported by any browser */
 
   // обёртка калькулятора
-  .calc-wrapper {
+  .calc-wrapper-fixed {
     padding: 0;
     position: fixed;
     bottom: 0;
     z-index: 1;
+  }
+  .calc-wrapper-inplace {
+    padding: 0;
+    bottom: 0;
+    z-index: 1;
+  }
 
-    // калькулятор
-    .calculator {
-      width: 100%;
+  // калькулятор
+  .calculator {
+    width: 100%;
+    display: flex;
+    margin: 0 auto;
+    flex-direction: column;
+    max-width: 720px;
+    min-width: 320px;
+    background-color: var(--vue-input-calculator-bg-color);
+    box-shadow: 0 0 0 1px var(--vue-input-calculator-bg-color);
+
+    .calculator-logs {
+      padding: 0 .8rem 0 .8rem;
+      max-height: 100px;
       display: flex;
-      margin: 0 auto;
+      position: relative;
+      overflow: auto;
+      align-items: flex-end;
       flex-direction: column;
-      max-width: 720px;
-      min-width: 320px;
-      background-color: var(--vue-input-calculator-bg-color);
-      box-shadow: 0 0 0 1px var(--vue-input-calculator-bg-color);
+      background: var(--vue-input-calculator-event-btn-bg-color);
 
-      .calculator-logs {
-        padding: 0 .8rem 0 .8rem;
-        max-height: 100px;
-        display: flex;
-        position: relative;
-        overflow: auto;
-        align-items: flex-end;
-        flex-direction: column;
-        background: var(--vue-input-calculator-event-btn-bg-color);
-
-        .header {
-          color: var(--vue-input-calculator-text-color);
-          align-self: flex-start;
-          position: sticky;
-          top: 0;
-          left: 0;
-          padding-top: 5px;
-        }
-
-        span {
-          color: var(--vue-input-calculator-text-color);
-          opacity: .75;
-          display: block;
-          font-size: 1rem;
-          text-align: right;
-          padding: .4rem 0;
-          line-height: 1;
-          font-weight: lighter;
-        }
+      .header {
+        color: var(--vue-input-calculator-text-color);
+        align-self: flex-start;
+        position: sticky;
+        top: 0;
+        left: 0;
+        padding-top: 5px;
       }
 
-      .calculator-input {
+      span {
         color: var(--vue-input-calculator-text-color);
-        width: 100%;
-        border: none;
-        padding: .8rem;
+        opacity: .75;
         display: block;
-        font-size: 2.4rem;
-        background: none;
+        font-size: 1rem;
         text-align: right;
+        padding: .4rem 0;
+        line-height: 1;
         font-weight: lighter;
-
-        &:focus, &:active {
-          outline: none;
-        }
       }
+    }
 
-      .calculator-row {
-        display: flex;
-        padding: 0;
-        justify-content: space-around;
+    .calculator-input {
+      color: var(--vue-input-calculator-text-color);
+      width: 100%;
+      border: none;
+      padding: .8rem;
+      display: block;
+      font-size: 2.4rem;
+      background: none;
+      text-align: right;
+      font-weight: lighter;
 
-        .calculator-col {
-          flex: 1;
-          box-shadow: 0 0 0 1px var(--vue-input-calculator-bg-color);
-
-          &.wide {
-            flex: 2;
-          }
-        }
-      }
-
-      .calculator-btn {
-        width: 100%;
-        color: var(--vue-input-calculator-text-color);
-        border: none;
-        cursor: pointer;
-        padding: .3rem;
+      &:focus, &:active {
         outline: none;
-        font-size: 2rem;
-        transition: all .3s ease-in-out;
-        font-weight: 200;
-        justify-content: center;
-        background-color: var(--vue-input-calculator-number-btn-bg-color);
+      }
+    }
 
-        &.success {
-          background-color: var(--vue-input-calculator-action-success-btn-bg-color);
-          color: var(--vue-input-calculator-text-color);
-        }
+    .calculator-row {
+      display: flex;
+      padding: 0;
+      justify-content: space-around;
 
-        &.accent {
-          background-color: var(--vue-input-calculator-action-btn-bg-color);
-          color: var(--vue-input-calculator-text-color);
-        }
+      .calculator-col {
+        flex: 1;
+        box-shadow: 0 0 0 1px var(--vue-input-calculator-bg-color);
 
-        &.gray {
-          background-color: var(--vue-input-calculator-event-btn-bg-color);
-        }
-
-        &.action {
-        }
-
-        &:active {
-          background-color: var(--vue-input-calculator-bg-color);
+        &.wide {
+          flex: 2;
         }
       }
+    }
 
+    .calculator-btn {
+      width: 100%;
+      color: var(--vue-input-calculator-text-color);
+      border: none;
+      cursor: pointer;
+      padding: .3rem;
+      outline: none;
+      font-size: 2rem;
+      transition: all .3s ease-in-out;
+      font-weight: 200;
+      justify-content: center;
+      background-color: var(--vue-input-calculator-number-btn-bg-color);
+
+      &.success {
+        background-color: var(--vue-input-calculator-action-success-btn-bg-color);
+        color: var(--vue-input-calculator-text-color);
+      }
+
+      &.accent {
+        background-color: var(--vue-input-calculator-action-btn-bg-color);
+        color: var(--vue-input-calculator-text-color);
+      }
+
+      &.gray {
+        background-color: var(--vue-input-calculator-event-btn-bg-color);
+      }
+
+      &.action {
+      }
+
+      &:active {
+        background-color: var(--vue-input-calculator-bg-color);
+      }
     }
   }
 
