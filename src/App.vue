@@ -69,7 +69,7 @@
           auto-apply, persistent, place='in-place'
         </small>
       </div>
-      <div class="sample" style="display: flex">
+      <div class="sample">
         <VueInputCalculator v-model="inputSimple"
                             autoApply
                             place="in-place"
