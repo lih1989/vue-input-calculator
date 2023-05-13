@@ -3,7 +3,7 @@
     <div :class="triggerWrapperClass" @click="show=!show">
       <slot>Trigger</slot>
     </div>
-    <CalculatorInterface @input="$emit('update:modelValue', $event)" @hide="show=false" :show="show" v-bind="$props"/>
+    <CalculatorInterface @input="$emit('update:modelValue', $event)" @hide="show=false" :show="place==='in-place' || show" v-bind="$props"/>
   </div>
 </template>
 
@@ -69,6 +69,10 @@ export default {
     enableKeyboard: { // нужен ли ввод с клавиатуры
       type: Boolean,
       default: false
+    },
+    place: {
+      type: String,
+      default: 'modal'
     }
   },
   data() {

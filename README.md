@@ -70,6 +70,7 @@ persistent | `Boolean` | `false` | disable backdrop click to cancel (outside cli
 readonly-input | `Boolean` | `true` | calculator input read only
 is-history-logs | `Boolean` | `true` | show math operations log
 z-index | `String, Number` | 9999 | layer calculator z-index position 
+place | `in-place\|modal` | `modal` | `in-place` puts interface in its DOM position, `modal` or other displays on click input. 
 trigger-wrapper-class | `String` | - | trigger for open calculator class styles
 text-color | `String` | `#ffffff` | calculator text color
 bg-color | `String` | `#2f2f31` | calculator background color

@@ -66,13 +66,14 @@
           Other props:
         </div>
         <small>
-          auto-apply, persistent
+          auto-apply, persistent, place='in-place'
         </small>
       </div>
       <div class="sample">
         <input type="number" v-model.number="inputSimple"/>
         <VueInputCalculator v-model="inputSimple"
                             autoApply
+                            place="in-place"
                             :persistent="true">
           <button style="height: 34px;background-color: #2c3e50;color: white; font-weight: 600">+/-</button>
         </VueInputCalculator>
@@ -145,7 +146,6 @@ html, body, #app {
     padding: 1rem;
     background-color: #e6e6e6;
     min-width: 300px;
-    max-width: 400px;
 
 
     & > .input-label {
