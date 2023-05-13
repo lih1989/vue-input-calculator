@@ -1,6 +1,6 @@
 {
   "name": "vue-input-calculator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Calculator input component. Mobile friendly.",
   "author": "Ivan Lihomanov <lih1989@yandex.ru>",
   "scripts": {
